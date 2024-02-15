@@ -1,6 +1,9 @@
 package hr.fer.oprpp1.hw08.jnotepadpp;
 
-import java.awt.Image;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -9,15 +12,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class DefaultMultipleDocumentModel extends JTabbedPane implements MultipleDocumentModel{
 
@@ -30,7 +24,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 	private ImageIcon ucitajCrvenu() {
 		InputStream is = this.getClass().getResourceAsStream("icons/redD.png");
 		if(is == null) {
-			throw new NullPointerException("Ne mogu èitati iz mape za crvenu ikonu, tok je null!");
+			throw new NullPointerException("Ne mogu ï¿½itati iz mape za crvenu ikonu, tok je null!");
 		}
 		byte[] bytes;
 		try {
@@ -41,7 +35,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 			Image newimg = image.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH);
 			return new ImageIcon(newimg);
 		} catch (IOException e) {
-			System.out.println("Greška u èitanju crvene ikone u polje bajtova!");
+			System.out.println("Greï¿½ka u ï¿½itanju crvene ikone u polje bajtova!");
 		}
 		return null;
 	}
@@ -49,7 +43,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 	private ImageIcon ucitajZelenu() {
 		InputStream is = this.getClass().getResourceAsStream("icons/greenD.png");
 		if(is == null) {
-			throw new NullPointerException("Ne mogu èitati iz mape za zelenu ikonu, tok je null!");
+			throw new NullPointerException("Ne mogu ï¿½itati iz mape za zelenu ikonu, tok je null!");
 		}
 		byte[] bytes;
 		try {
@@ -60,7 +54,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 			Image newimg = image.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH);
 			return new ImageIcon(newimg);
 		} catch (IOException e) {
-			System.out.println("Greška u èitanju zelenu ikone u polje bajtova!");
+			System.out.println("Greï¿½ka u ï¿½itanju zelenu ikone u polje bajtova!");
 		}
 		return null;
 	}
@@ -126,7 +120,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 			setSelectedIndex(current);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			System.out.println("Greska pri uèitavanju dokumenta!");
+			System.out.println("Greska pri uï¿½itavanju dokumenta!");
 		}
 		return ucitaniDok;
 	}
@@ -140,8 +134,8 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 		}catch (IOException e1) {
 			JOptionPane.showMessageDialog(
 					this, 
-					"Pogreška prilikom zapisivanja datoteke " + newPath.toFile().getAbsolutePath() + ".\nPažnja: nije jasno u kojem je stanju datoteka na disku!", 
-					"Pogreška", 
+					"Pogreï¿½ka prilikom zapisivanja datoteke " + newPath.toFile().getAbsolutePath() + ".\nPaï¿½nja: nije jasno u kojem je stanju datoteka na disku!", 
+					"Pogreï¿½ka", 
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}

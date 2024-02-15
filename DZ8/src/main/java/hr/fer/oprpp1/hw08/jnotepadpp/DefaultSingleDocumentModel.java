@@ -1,12 +1,11 @@
 package hr.fer.oprpp1.hw08.jnotepadpp;
 
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 public class DefaultSingleDocumentModel implements SingleDocumentModel{
 	

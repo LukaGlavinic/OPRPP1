@@ -1,32 +1,19 @@
 package hr.fer.oprpp1.hw08.jnotepadpp;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-
 public class JNotepadPP extends JFrame {
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private MultipleDocumentModel tabPane;
 	private String ccpText;
@@ -70,39 +57,39 @@ public class JNotepadPP extends JFrame {
 				Action.NAME, 
 				"Open");
 		openDocumentAction.putValue(
-				Action.ACCELERATOR_KEY, 
-				KeyStroke.getKeyStroke("control O")); 
+				Action.ACCELERATOR_KEY,
+				KeyStroke.getKeyStroke("control O"));
 		openDocumentAction.putValue(
-				Action.MNEMONIC_KEY, 
-				KeyEvent.VK_O); 
+				Action.MNEMONIC_KEY,
+				KeyEvent.VK_O);
 		openDocumentAction.putValue(
-				Action.SHORT_DESCRIPTION, 
+				Action.SHORT_DESCRIPTION,
 				"Used to open existing file from disk.");
 		
 		saveDocumentAction.putValue(
-				Action.NAME, 
+				Action.NAME,
 				"Save");
 		saveDocumentAction.putValue(
-				Action.ACCELERATOR_KEY, 
-				KeyStroke.getKeyStroke("control S")); 
+				Action.ACCELERATOR_KEY,
+				KeyStroke.getKeyStroke("control S"));
 		saveDocumentAction.putValue(
-				Action.MNEMONIC_KEY, 
-				KeyEvent.VK_S); 
+				Action.MNEMONIC_KEY,
+				KeyEvent.VK_S);
 		saveDocumentAction.putValue(
-				Action.SHORT_DESCRIPTION, 
+				Action.SHORT_DESCRIPTION,
 				"Used to save current file to disk.");
 		
 		saveAsDocumentAction.putValue(
-				Action.NAME, 
+				Action.NAME,
 				"SaveAs");
 		saveAsDocumentAction.putValue(
-				Action.ACCELERATOR_KEY, 
-				KeyStroke.getKeyStroke("control A")); 
+				Action.ACCELERATOR_KEY,
+				KeyStroke.getKeyStroke("control A"));
 		saveAsDocumentAction.putValue(
-				Action.MNEMONIC_KEY, 
-				KeyEvent.VK_A); 
+				Action.MNEMONIC_KEY,
+				KeyEvent.VK_A);
 		saveAsDocumentAction.putValue(
-				Action.SHORT_DESCRIPTION, 
+				Action.SHORT_DESCRIPTION,
 				"Used to set name and save current file to disk.");
 		
 		closeDocumentAction.putValue(
@@ -278,8 +265,9 @@ public class JNotepadPP extends JFrame {
 		setJMenuBar(menuBar);
 	}
 	
-	private Action newDocumentAction = new AbstractAction() {
+	private final Action newDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -289,8 +277,9 @@ public class JNotepadPP extends JFrame {
 		}
 	};
 
-	private Action openDocumentAction = new AbstractAction() {
+	private final Action openDocumentAction = new AbstractAction() {
 		
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
@@ -305,27 +294,27 @@ public class JNotepadPP extends JFrame {
 				JOptionPane.showMessageDialog(
 						JNotepadPP.this, 
 						"Datoteka " + fileName.getAbsolutePath() + " ne postoji!", 
-						"Pogreška", 
+						"PogreÅ¡ka",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			try {
 				byte[] okteti = Files.readAllBytes(filePath);
 				tabPane.loadDocument(filePath);
-				setTitle(filePath.toString() + " - JNotepad++");
+				setTitle(filePath + " - JNotepad++");
 			} catch(Exception ex) {
 				JOptionPane.showMessageDialog(
 						JNotepadPP.this, 
-						"Pogreška prilikom èitanja datoteke " + fileName.getAbsolutePath() + ".", 
-						"Pogreška", 
+						"PogreÅ¡ka prilikom Äitanja datoteke " + fileName.getAbsolutePath() + ".",
+						"PogreÅ¡ka",
 						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
+            }
 		}
 	};
 	
-	private Action saveDocumentAction = new AbstractAction() {//POPRAVI
+	private final Action saveDocumentAction = new AbstractAction() {//POPRAVI
 		
+		@Serial
 		private static final long serialVersionUID = 1L;
 		
 		public void actionPerformed(ActionEvent e) {
@@ -336,7 +325,7 @@ public class JNotepadPP extends JFrame {
 				if(jfc.showSaveDialog(JNotepadPP.this) != JFileChooser.APPROVE_OPTION) {
 					JOptionPane.showMessageDialog(
 							JNotepadPP.this, 
-							"Ništa nije snimljeno.", 
+							"NiÅ¡ta nije snimljeno.",
 							"Upozorenje", 
 							JOptionPane.WARNING_MESSAGE);
 					return;
@@ -352,8 +341,9 @@ public class JNotepadPP extends JFrame {
 		}
 	};
 	
-	private Action saveAsDocumentAction = new AbstractAction() {
+	private final Action saveAsDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -363,7 +353,7 @@ public class JNotepadPP extends JFrame {
 			if(jfc.showSaveDialog(JNotepadPP.this) != JFileChooser.APPROVE_OPTION) {
 				JOptionPane.showMessageDialog(
 						JNotepadPP.this, 
-						"Ništa nije snimljeno.", 
+						"NiÅ¡ta nije snimljeno.",
 						"Upozorenje", 
 						JOptionPane.WARNING_MESSAGE);
 				return;
@@ -378,8 +368,9 @@ public class JNotepadPP extends JFrame {
 		}
 	};
 	
-	private Action closeDocumentAction = new AbstractAction() {
+	private final Action closeDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -398,8 +389,9 @@ public class JNotepadPP extends JFrame {
 		}
 	};
 	
-	private Action infoDocumentAction = new AbstractAction() {
+	private final Action infoDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -422,39 +414,40 @@ public class JNotepadPP extends JFrame {
 		}
 	};
 	
-	private Action copyDocumentAction = new AbstractAction() {
+	private final Action copyDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextArea textArea = tabPane.getCurrentDocument().getTextComponent();
 			Document doc = textArea.getDocument();
-			int offset = 0, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
+			int offset, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 			if(len != 0) {
 				offset = Math.min(textArea.getCaret().getDot(), textArea.getCaret().getMark());
 				try {
 					ccpText = doc.getText(offset, len);
 				}catch(BadLocationException ex) {
 					System.out.println(ex.getMessage());
-					ex.printStackTrace();
 				}
 			}else {
 				//TODO
-				//onemoguæi tipku
+				//disable button
 			}
 		}
 	};
 	
-	private Action cutDocumentAction = new AbstractAction() {
+	private final Action cutDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextArea textArea = tabPane.getCurrentDocument().getTextComponent();
 			Document doc = textArea.getDocument();
-			int offset = 0, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
+			int offset, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 			if(len != 0) {
 				offset = Math.min(textArea.getCaret().getDot(), textArea.getCaret().getMark());
 				try {
@@ -463,24 +456,24 @@ public class JNotepadPP extends JFrame {
 					tabPane.getCurrentDocument().setModified(true);
 				}catch(BadLocationException ex) {
 					System.out.println(ex.getMessage());
-					ex.printStackTrace();
 				}
 			}else {
 				//TODO
-				//onemoguæi tipku
+				//disable button
 			}
 		}
 	};
 	
-	private Action pasteDocumentAction = new AbstractAction() {
+	private final Action pasteDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextArea textArea = tabPane.getCurrentDocument().getTextComponent();
 			Document doc = textArea.getDocument();
-			int offset = 0, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
+			int offset, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 			try {
 				if(len != 0) {
 					offset = Math.min(textArea.getCaret().getDot(), textArea.getCaret().getMark());
@@ -491,21 +484,21 @@ public class JNotepadPP extends JFrame {
 				}
 			}catch(BadLocationException ex) {
 				System.out.println(ex.getMessage());
-				ex.printStackTrace();
 			}
 			tabPane.getCurrentDocument().setModified(true);
 		}
 	};
 	
-	private Action invertDocumentAction = new AbstractAction() {
+	private final Action invertDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextArea textArea = tabPane.getCurrentDocument().getTextComponent();
 			Document doc = textArea.getDocument();
-			int offset = 0, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
+			int offset, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 			if(len != 0) {
 				offset = Math.min(textArea.getCaret().getDot(), textArea.getCaret().getMark());
 				try {
@@ -516,11 +509,10 @@ public class JNotepadPP extends JFrame {
 					tabPane.getCurrentDocument().setModified(true);
 				}catch(BadLocationException ex) {
 					System.out.println(ex.getMessage());
-					ex.printStackTrace();
 				}
 			}else {
 				//TODO
-				//onemoguæi tipku
+				//disable button
 			}
 		}
 		private String changeCase(String text) {
@@ -537,15 +529,16 @@ public class JNotepadPP extends JFrame {
 		}
 	};
 	
-	private Action uppercaseDocumentAction = new AbstractAction() {
+	private final Action uppercaseDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextArea textArea = tabPane.getCurrentDocument().getTextComponent();
 			Document doc = textArea.getDocument();
-			int offset = 0, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
+			int offset, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 			if(len != 0) {
 				offset = Math.min(textArea.getCaret().getDot(), textArea.getCaret().getMark());
 				try {
@@ -556,24 +549,24 @@ public class JNotepadPP extends JFrame {
 					tabPane.getCurrentDocument().setModified(true);
 				}catch(BadLocationException ex) {
 					System.out.println(ex.getMessage());
-					ex.printStackTrace();
 				}
 			}else {
 				//TODO
-				//onemoguæi tipku
+				//disable button
 			}
 		}
 	};
 	
-	private Action lowercaseDocumentAction = new AbstractAction() {
+	private final Action lowercaseDocumentAction = new AbstractAction() {
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextArea textArea = tabPane.getCurrentDocument().getTextComponent();
 			Document doc = textArea.getDocument();
-			int offset = 0, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
+			int offset, len = Math.abs(textArea.getCaret().getDot() - textArea.getCaret().getMark());
 			if(len != 0) {
 				offset = Math.min(textArea.getCaret().getDot(), textArea.getCaret().getMark());
 				try {
@@ -584,17 +577,17 @@ public class JNotepadPP extends JFrame {
 					tabPane.getCurrentDocument().setModified(true);
 				}catch(BadLocationException ex) {
 					System.out.println(ex.getMessage());
-					ex.printStackTrace();
 				}
 			}else {
 				//TODO
-				//onemoguæi tipku
+				//disable button
 			}
 		}
 	};
 	
-	private Action exitAction = new AbstractAction() {
+	private final Action exitAction = new AbstractAction() {
 		
+		@Serial
 		private static final long serialVersionUID = 1L;
 		
 		public void actionPerformed(ActionEvent e) {
@@ -603,10 +596,6 @@ public class JNotepadPP extends JFrame {
 	};
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new JNotepadPP().setVisible(true);
-			}
-		});
+		SwingUtilities.invokeLater(() -> new JNotepadPP().setVisible(true));
 	}
 }
