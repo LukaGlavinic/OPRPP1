@@ -67,11 +67,8 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			if(savedModificationCount != modificationCount) {
 				throw new ConcurrentModificationException("Nastupila je promjena strukture kolekcije!");
 			}
-			if(brojac < size) {
-				return true;
-			}
-			return false;
-		}
+            return brojac < size;
+        }
 		@Override
 		@SuppressWarnings("rawtypes")
 		public SimpleHashtable.TableEntry next() {
@@ -82,13 +79,13 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 				throw new NoSuchElementException("Nema daljnjih elemenata!");
 			}else {
 				if(brojac == 0) {
-					for(int i = 0; i < table.length; i++) {
-						if(table[i] != null) {
-							trenutni = table[i];
-							brojac++;
-							return trenutni;
-						}
-					}
+                    for (TableEntry<K, V> kvTableEntry : table) {
+                        if (kvTableEntry != null) {
+                            trenutni = kvTableEntry;
+                            brojac++;
+                            return trenutni;
+                        }
+                    }
 				}else if(trenutni.next != null) {
 					trenutni = trenutni.next;
 					brojac++;
@@ -142,7 +139,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		if(key == null) {
 			throw new NullPointerException("Predani kljuc je null!");
 		}
-		if(this.size / this.table.length < 0.75) {
+		if((double) this.size / this.table.length < 0.75) {
 			int index = Math.abs(key.hashCode()) % this.table.length;
 			if(this.table[index] == null) {
 				TableEntry<K, V> noviPodatak = new TableEntry<>();
@@ -179,25 +176,25 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		}else {
 			TableEntry<K, V>[] originalnaTablica = this.toArray();
 			this.table = new TableEntry[this.table.length * 2];
-			for(int i = 0; i < originalnaTablica.length; i++) {
-				int index = Math.abs(originalnaTablica[i].kljuc.hashCode()) % this.table.length;
-				if(this.table[index] == null) {
-					TableEntry<K, V> noviPodatak = new TableEntry<>();
-					noviPodatak.kljuc = originalnaTablica[i].kljuc;
-					noviPodatak.vrijednost = originalnaTablica[i].vrijednost;
-					noviPodatak.next = null;
-					this.table[index] = noviPodatak;
-				}else {
-					TableEntry<K, V> trenutni = this.table[index];
-					while(trenutni.next != null) {
-						trenutni = trenutni.next;
-					}
-					trenutni.next = new TableEntry<>();
-					trenutni = trenutni.next;
-					trenutni.kljuc = originalnaTablica[i].kljuc;
-					trenutni.vrijednost = originalnaTablica[i].vrijednost;
-				}
-			}
+            for (TableEntry<K, V> kvTableEntry : originalnaTablica) {
+                int index = Math.abs(kvTableEntry.kljuc.hashCode()) % this.table.length;
+                if (this.table[index] == null) {
+                    TableEntry<K, V> noviPodatak = new TableEntry<>();
+                    noviPodatak.kljuc = kvTableEntry.kljuc;
+                    noviPodatak.vrijednost = kvTableEntry.vrijednost;
+                    noviPodatak.next = null;
+                    this.table[index] = noviPodatak;
+                } else {
+                    TableEntry<K, V> trenutni = this.table[index];
+                    while (trenutni.next != null) {
+                        trenutni = trenutni.next;
+                    }
+                    trenutni.next = new TableEntry<>();
+                    trenutni = trenutni.next;
+                    trenutni.kljuc = kvTableEntry.kljuc;
+                    trenutni.vrijednost = kvTableEntry.vrijednost;
+                }
+            }
 			int index = Math.abs(key.hashCode()) % this.table.length;
 			if(this.table[index] == null) {
 				TableEntry<K, V> noviPodatak = new TableEntry<>();
@@ -240,15 +237,15 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	 */
 	public V get(Object key) {
 		TableEntry<K, V> trenutni;
-		for(int i = 0; i < this.table.length; i++) {
-			trenutni = this.table[i];
-			while(trenutni != null) {
-				if(trenutni.getKljuc().equals(key)) {
-					return trenutni.getVrijednost();
-				}
-				trenutni = trenutni.next;
-			}
-		}
+        for (TableEntry<K, V> kvTableEntry : this.table) {
+            trenutni = kvTableEntry;
+            while (trenutni != null) {
+                if (trenutni.getKljuc().equals(key)) {
+                    return trenutni.getVrijednost();
+                }
+                trenutni = trenutni.next;
+            }
+        }
 		return null;
 	}
 	/**
@@ -284,15 +281,15 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	 */
 	public boolean containsValue(Object value) {
 		TableEntry<K, V> trenutni;
-		for(int i = 0; i < this.table.length; i++) {
-			trenutni = this.table[i];
-			while(trenutni != null) {
-				if(trenutni.getVrijednost() == value) {
-					return true;
-				}
-				trenutni = trenutni.next;
-			}
-		}
+        for (TableEntry<K, V> kvTableEntry : this.table) {
+            trenutni = kvTableEntry;
+            while (trenutni != null) {
+                if (trenutni.getVrijednost() == value) {
+                    return true;
+                }
+                trenutni = trenutni.next;
+            }
+        }
 		return false;
 	}
 	/**
@@ -306,7 +303,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		}
 		int index = Math.abs(key.hashCode()) % this.table.length;
 		TableEntry<K, V> trenutni = this.table[index];
-		V povratna = null;
+		V povratna;
 		if(trenutni == null) {
 			return null;
 		}else if(trenutni.kljuc.equals(key)) {
@@ -314,8 +311,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			povratna = trenutni.vrijednost;
 			trenutni.vrijednost = null;
 			trenutni.kljuc = null;
-			trenutni = null;
-			this.size--;
+            this.size--;
 			this.modificationCount++;
 			return povratna;
 		}else if(trenutni.next != null) {
@@ -336,8 +332,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 				povratna = trenutni.vrijednost;
 				trenutni.kljuc = null;
 				trenutni.vrijednost = null;
-				trenutni = null;
-				this.size--;
+                this.size--;
 				this.modificationCount++;
 				return povratna;
 			}
@@ -349,27 +344,27 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	 * @return true ako je inaèe false
 	 */
 	public boolean isEmpty() {
-		return this.size == 0 ? true : false;
+		return this.size == 0;
 	}
 	/**
 	 * vraæa String koji predstavlja kolekciju
 	 */
 	public String toString() {
-		String mapa = "[";
+		StringBuilder mapa = new StringBuilder("[");
 		TableEntry<K, V> trenutni;
 		for(int i = 0, brojIspisanih = 0; i < this.table.length; i++) {
 			trenutni = this.table[i];
 			while(trenutni != null) {
-				mapa += trenutni.getKljuc().toString() + "=" + trenutni.getVrijednost().toString();
+				mapa.append(trenutni.getKljuc().toString()).append("=").append(trenutni.getVrijednost().toString());
 				brojIspisanih++;
 				if(brojIspisanih < this.size) {
-					mapa += ", ";
+					mapa.append(", ");
 				}
 				trenutni = trenutni.next;
 			}
 		}
-		mapa += "]";
-		return mapa;
+		mapa.append("]");
+		return mapa.toString();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -377,14 +372,14 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		TableEntry<K, V>[] novaTablica = new TableEntry[this.size];
 		TableEntry<K, V> trenutni;
 		int j = 0;
-		for(int i = 0; i < this.table.length; i++) {
-			trenutni = this.table[i];
-			while(trenutni != null) {
-				novaTablica[j] = trenutni;
-				j++;
-				trenutni = trenutni.next;
-			}
-		}
+        for (TableEntry<K, V> kvTableEntry : this.table) {
+            trenutni = kvTableEntry;
+            while (trenutni != null) {
+                novaTablica[j] = trenutni;
+                j++;
+                trenutni = trenutni.next;
+            }
+        }
 		return novaTablica;
 	}
 	/**

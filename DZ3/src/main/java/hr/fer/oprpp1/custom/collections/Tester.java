@@ -5,11 +5,10 @@ package hr.fer.oprpp1.custom.collections;
  *
  */
 public interface Tester<T> {
-/**
- * metoda koja testira predani objekt
- * @param obj objekt za testiranje
- * @return true ako objekt zadovoljava uvjet testa
- */
-	@SuppressWarnings("hiding")
-	public abstract <T> boolean test(T obj);
+	/**
+	 * metoda koja testira predani objekt
+	 * @param obj objekt za testiranje
+	 * @return true ako objekt zadovoljava uvjet testa
+	 */
+    <G> boolean test(G obj);
 }

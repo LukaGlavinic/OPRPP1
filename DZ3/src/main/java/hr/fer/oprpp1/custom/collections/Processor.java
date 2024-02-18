@@ -7,8 +7,8 @@ package hr.fer.oprpp1.custom.collections;
 public interface Processor<T> {
 	/**
 	 * Obavlja neki posao nad objektom
-	 * @param value
+	 * @param value vrijednost za procesiranje
 	 */
 	@SuppressWarnings("hiding")
-	public abstract <T> void process(T value);
+    <G> void process(G value);
 }

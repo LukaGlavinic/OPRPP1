@@ -3,10 +3,9 @@ package hr.fer.oprpp1.custom.collections;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 
-@SuppressWarnings("rawtypes")
 public class LinkedListIndexedCollection implements List{
 	/**
-	 * kolekcija ostvarena pomoÄ‡u povezane liste
+	 * kolekcija ostvarena pomoæu povezane liste
 	 * @author Luka
 	 *
 	 */
@@ -25,9 +24,8 @@ public class LinkedListIndexedCollection implements List{
 	 */
 	@Override
 	public ListElementsGetter createElementsGetter() {
-		
-		LinkedListIndexedCollection.ListElementsGetter elementsGetter = new LinkedListIndexedCollection.ListElementsGetter(this);
-		return elementsGetter;
+
+        return new ListElementsGetter(this);
 	}
 	/**
 	 * klasa koja služi kao ElementsGetter za objekt tipa LinkedListIndexedCollection
@@ -35,17 +33,17 @@ public class LinkedListIndexedCollection implements List{
 	 *
 	 */
 	private static class ListElementsGetter implements ElementsGetter{
-		private LinkedListIndexedCollection l;
+		private final LinkedListIndexedCollection l;
 		private ListNode trenutniCvor;
-		private long savedModificationCount;
+		private final long savedModificationCount;
 		/**
 		 * konstruktor za stvaranje ListElementsGetter za LinkedListIndexedCollection kojeg se predaje u konstruktor
 		 * @param list predano u konstruktor
 		 */
 		public ListElementsGetter(LinkedListIndexedCollection list) {
-			this.l = list;
-			this.trenutniCvor = list.first;
-			this.savedModificationCount = list.modificationCount;
+			l = list;
+			trenutniCvor = list.first;
+			savedModificationCount = list.modificationCount;
 		}
 		/**
 		 * metoda vraæa true ako postoji sljedeæi element liste
@@ -54,14 +52,14 @@ public class LinkedListIndexedCollection implements List{
 			return !(trenutniCvor == null);
 		}
 		/**
-		 * metoda vraÄ‡a objekt iz trenutnog èlana liste
+		 * metoda vraæa objekt iz trenutnog èlana liste
 		 */
 		public Object getNextElement() {
 			if(this.savedModificationCount != l.modificationCount) {
 				throw new ConcurrentModificationException("Bilo je strukturnih izmjena nad poljem!");
 			}else {
 				if(trenutniCvor == null || trenutniCvor.value == null) {
-					throw new NoSuchElementException("Nema viÅ¡e objekata u listi!");
+					throw new NoSuchElementException("Nema više objekata u listi!");
 				}
 				Object o = trenutniCvor.value;
 				trenutniCvor = trenutniCvor.next;
@@ -229,10 +227,10 @@ public class LinkedListIndexedCollection implements List{
 					}
 				}
 			}
-			trenutni.value = null;
+            assert trenutni != null;
+            trenutni.value = null;
 			trenutni.next = trenutni.previous = null;
-			trenutni = null;
-			this.size--;
+            this.size--;
 			this.modificationCount++;
 		}
 	}
@@ -241,7 +239,7 @@ public class LinkedListIndexedCollection implements List{
 	 */
 	@Override
 	public boolean isEmpty() {
-		return this.size == 0 ? true : false;
+		return this.size == 0;
 	}
 	/**
 	 * metoda vraæa broj elemenata liste
@@ -286,8 +284,7 @@ public class LinkedListIndexedCollection implements List{
 					}
 					trenutni.value = null;
 					trenutni.next = trenutni.previous = null;
-					trenutni = null;
-					this.size--;
+                    this.size--;
 					this.modificationCount++;
 					return true;
 				}
