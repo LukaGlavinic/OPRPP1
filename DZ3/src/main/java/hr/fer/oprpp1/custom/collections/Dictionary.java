@@ -2,12 +2,12 @@ package hr.fer.oprpp1.custom.collections;
 
 public class Dictionary<K, V> {
 
-	private ArrayIndexedCollection<Pair<K, V>> poljeMape;
+	private final ArrayIndexedCollection<Pair<K, V>> poljeMape;
 	
-	@SuppressWarnings("hiding")
-	private class Pair<K, V> {
-		private K kljuc;
-		private V vrijednost;
+
+	private static class Pair<P, S> {
+		private P kljuc;
+		private S vrijednost;
 	}
 	
 	public Dictionary(){
@@ -45,20 +45,20 @@ public class Dictionary<K, V> {
 			throw new NullPointerException("Predani kljuè je null!");
 		}
 		Pair<K, V> trenutniPar;
-		V povratna = null;
+		V povratna;
 		for(int i = 0; i < poljeMape.size(); i++) {
-			trenutniPar = (Dictionary<K, V>.Pair<K, V>) poljeMape.get(i);
+			trenutniPar = (Dictionary.Pair<K, V>) poljeMape.get(i);
 			if(trenutniPar.kljuc.equals(key)) {
 				povratna = trenutniPar.vrijednost;
 				trenutniPar.vrijednost = value;
 				return povratna;
 			}
 		}
-		Pair<K, V> noviPar = new Pair<K, V>();
+		Pair<K, V> noviPar = new Pair<>();
 		noviPar.kljuc = key;
 		noviPar.vrijednost = value;
 		poljeMape.add(noviPar);
-		return povratna;
+		return null;
 	}
 	/**
 	 * vraæa vrijednost od zadanog kljuèa iz rijeènika
@@ -69,7 +69,7 @@ public class Dictionary<K, V> {
 	public V get(Object key) {
 		Pair<K, V> trenutniPar;
 		for(int i = 0; i < poljeMape.size(); i++) {
-			trenutniPar = (Dictionary<K, V>.Pair<K, V>) poljeMape.get(i);
+			trenutniPar = (Dictionary.Pair<K, V>) poljeMape.get(i);
 			if(trenutniPar.kljuc == key) {
 				return trenutniPar.vrijednost;
 			}
@@ -87,9 +87,9 @@ public class Dictionary<K, V> {
 			throw new NullPointerException("Predani kljuè je null!");
 		}
 		Pair<K, V> trenutniPar;
-		V povratna = null;
+		V povratna;
 		for(int i = 0; i < poljeMape.size(); i++) {
-			trenutniPar = (Dictionary<K, V>.Pair<K, V>) poljeMape.get(i);
+			trenutniPar = (Dictionary.Pair<K, V>) poljeMape.get(i);
 			if(trenutniPar.kljuc == key) {
 				povratna = trenutniPar.vrijednost; 
 				trenutniPar.kljuc = null;
@@ -98,6 +98,6 @@ public class Dictionary<K, V> {
 				return povratna;
 			}
 		}
-		return povratna;
+		return null;
 	}
 }
