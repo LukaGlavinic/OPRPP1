@@ -1,12 +1,8 @@
 package hr.fer.oprpp1.hw02.prob1;
 
-import static org.junit.jupiter.api.Assertions.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import hr.fer.oprpp1.hw02.prob1.Lexer;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Prob1Test {
 
@@ -47,7 +43,7 @@ public class Prob1Test {
 		// will obtain EOF
 		lexer.nextToken();
 		// will throw!
-		assertThrows(LexerException.class, () -> lexer.nextToken());
+		assertThrows(LexerException.class, lexer::nextToken);
 	}
 	
 	@Test
@@ -60,11 +56,11 @@ public class Prob1Test {
 
 	@Test
 	public void testTwoWords() {
-		// Lets check for several words...
+		// Let's check for several words...
 		Lexer lexer = new Lexer("  Štefanija\r\n\t Automobil   ");
 
 		// We expect the following stream of tokens
-		Token correctData[] = {
+		Token[] correctData = {
 			new Token(TokenType.WORD, "Štefanija"),
 			new Token(TokenType.WORD, "Automobil"),
 			new Token(TokenType.EOF, null)
@@ -77,7 +73,7 @@ public class Prob1Test {
 		Lexer lexer = new Lexer("  \\1st  \r\n\t   ");
 
 		// We expect the following stream of tokens
-		Token correctData[] = {
+		Token[] correctData = {
 			new Token(TokenType.WORD, "1st"),
 			new Token(TokenType.EOF, null)
 		};
@@ -90,7 +86,7 @@ public class Prob1Test {
 		Lexer lexer = new Lexer("   \\");  // this is three spaces and a single backslash -- 4 letters string
 
 		// will throw!
-		assertThrows(LexerException.class, () -> lexer.nextToken());
+		assertThrows(LexerException.class, lexer::nextToken);
 	}
 
 	@Test
@@ -98,7 +94,7 @@ public class Prob1Test {
 		Lexer lexer = new Lexer("   \\a    ");
 
 		// will throw!
-		assertThrows(LexerException.class, () -> lexer.nextToken());
+		assertThrows(LexerException.class, lexer::nextToken);
 	}
 
 	@Test
@@ -106,7 +102,7 @@ public class Prob1Test {
 		Lexer lexer = new Lexer("  \\1  ");
 
 		// We expect the following stream of tokens
-		Token correctData[] = {
+		Token[] correctData = {
 			new Token(TokenType.WORD, "1"),
 			new Token(TokenType.EOF, null)
 		};
@@ -116,11 +112,11 @@ public class Prob1Test {
 
 	@Test
 	public void testWordWithManyEscapes() {
-		// Lets check for several words...
+		// Let's check for several words...
 		Lexer lexer = new Lexer("  ab\\1\\2cd\\3 ab\\2\\1cd\\4\\\\ \r\n\t   ");
 
 		// We expect the following stream of tokens
-		Token correctData[] = {
+		Token[] correctData = {
 			new Token(TokenType.WORD, "ab12cd3"),
 			new Token(TokenType.WORD, "ab21cd4\\"), // this is 8-letter long, not nine! Only single backslash!
 			new Token(TokenType.EOF, null)
@@ -131,12 +127,12 @@ public class Prob1Test {
 
 	@Test
 	public void testTwoNumbers() {
-		// Lets check for several numbers...
+		// Let's check for several numbers...
 		Lexer lexer = new Lexer("  1234\r\n\t 5678   ");
 
-		Token correctData[] = {
-			new Token(TokenType.NUMBER, Long.valueOf(1234)),
-			new Token(TokenType.NUMBER, Long.valueOf(5678)),
+		Token[] correctData = {
+			new Token(TokenType.NUMBER, 1234L),
+			new Token(TokenType.NUMBER, 5678L),
 			new Token(TokenType.EOF, null)
 		};
 
@@ -148,18 +144,18 @@ public class Prob1Test {
 		Lexer lexer = new Lexer("  12345678912123123432123   ");
 
 		// will throw!
-		assertThrows(LexerException.class, () -> lexer.nextToken());
+		assertThrows(LexerException.class, lexer::nextToken);
 	}
 
 	@Test
 	public void testWordWithManyEscapesAndNumbers() {
-		// Lets check for several words...
+		// Let's check for several words...
 		Lexer lexer = new Lexer("  ab\\123cd ab\\2\\1cd\\4\\\\ \r\n\t   ");
 
 		// We expect following stream of tokens
-		Token correctData[] = {
+		Token[] correctData = {
 			new Token(TokenType.WORD, "ab1"),
-			new Token(TokenType.NUMBER, Long.valueOf(23)),
+			new Token(TokenType.NUMBER, 23L),
 			new Token(TokenType.WORD, "cd"),
 			new Token(TokenType.WORD, "ab21cd4\\"), // this is 8-letter long, not nine! Only single backslash!
 			new Token(TokenType.EOF, null)
@@ -170,15 +166,15 @@ public class Prob1Test {
 	
 	@Test
 	public void testSomeSymbols() {
-		// Lets check for several symbols...
+		// Let's check for several symbols...
 		Lexer lexer = new Lexer("  -.? \r\n\t ##   ");
 
-		Token correctData[] = {
-			new Token(TokenType.SYMBOL, Character.valueOf('-')),
-			new Token(TokenType.SYMBOL, Character.valueOf('.')),
-			new Token(TokenType.SYMBOL, Character.valueOf('?')),
-			new Token(TokenType.SYMBOL, Character.valueOf('#')),
-			new Token(TokenType.SYMBOL, Character.valueOf('#')),
+		Token[] correctData = {
+			new Token(TokenType.SYMBOL, '-'),
+			new Token(TokenType.SYMBOL, '.'),
+			new Token(TokenType.SYMBOL, '?'),
+			new Token(TokenType.SYMBOL, '#'),
+			new Token(TokenType.SYMBOL, '#'),
 			new Token(TokenType.EOF, null)
 		};
 
@@ -187,18 +183,18 @@ public class Prob1Test {
 	
 	@Test
 	public void testCombinedInput() {
-		// Lets check for several symbols...
+		// Let's check for several symbols...
 		Lexer lexer = new Lexer("Janko 3! Jasmina 5; -24");
 
-		Token correctData[] = {
+		Token[] correctData = {
 			new Token(TokenType.WORD, "Janko"),
-			new Token(TokenType.NUMBER, Long.valueOf(3)),
-			new Token(TokenType.SYMBOL, Character.valueOf('!')),
+			new Token(TokenType.NUMBER, 3L),
+			new Token(TokenType.SYMBOL, '!'),
 			new Token(TokenType.WORD, "Jasmina"),
-			new Token(TokenType.NUMBER, Long.valueOf(5)),
-			new Token(TokenType.SYMBOL, Character.valueOf(';')),
-			new Token(TokenType.SYMBOL, Character.valueOf('-')),
-			new Token(TokenType.NUMBER, Long.valueOf(24)),
+			new Token(TokenType.NUMBER, 5L),
+			new Token(TokenType.SYMBOL, ';'),
+			new Token(TokenType.SYMBOL, '-'),
+			new Token(TokenType.NUMBER, 24L),
 			new Token(TokenType.EOF, null)
 		};
 
@@ -261,7 +257,7 @@ public class Prob1Test {
 		// will obtain EOF
 		lexer.nextToken();
 		// will throw!
-		assertThrows(LexerException.class, () -> lexer.nextToken());
+		assertThrows(LexerException.class, lexer::nextToken);
 	}
 	
 	@Test
@@ -279,14 +275,14 @@ public class Prob1Test {
 		Lexer lexer = new Lexer("Janko 3# Ivana26\\a 463abc#zzz");
 
 		checkToken(lexer.nextToken(), new Token(TokenType.WORD, "Janko"));
-		checkToken(lexer.nextToken(), new Token(TokenType.NUMBER, Long.valueOf(3)));
-		checkToken(lexer.nextToken(), new Token(TokenType.SYMBOL, Character.valueOf('#')));
+		checkToken(lexer.nextToken(), new Token(TokenType.NUMBER, 3L));
+		checkToken(lexer.nextToken(), new Token(TokenType.SYMBOL, '#'));
 		
 		lexer.setState(LexerState.EXTENDED);
 		
 		checkToken(lexer.nextToken(), new Token(TokenType.WORD, "Ivana26\\a"));
 		checkToken(lexer.nextToken(), new Token(TokenType.WORD, "463abc"));
-		checkToken(lexer.nextToken(), new Token(TokenType.SYMBOL, Character.valueOf('#')));
+		checkToken(lexer.nextToken(), new Token(TokenType.SYMBOL, '#'));
 		
 		lexer.setState(LexerState.BASIC);
 		

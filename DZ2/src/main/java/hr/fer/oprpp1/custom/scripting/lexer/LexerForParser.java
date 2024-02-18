@@ -1,11 +1,6 @@
 package hr.fer.oprpp1.custom.scripting.lexer;
 
-import hr.fer.oprpp1.custom.scripting.elems.ElementConstantDouble;
-import hr.fer.oprpp1.custom.scripting.elems.ElementConstantInteger;
-import hr.fer.oprpp1.custom.scripting.elems.ElementFunction;
-import hr.fer.oprpp1.custom.scripting.elems.ElementOperator;
-import hr.fer.oprpp1.custom.scripting.elems.ElementString;
-import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
+import hr.fer.oprpp1.custom.scripting.elems.*;
 import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParserException;
 
 public class LexerForParser {
@@ -21,375 +16,350 @@ public class LexerForParser {
 	public LexerForParser(String text) {
 		if(text == null) {
 			throw new NullPointerException("Predani tekst je null!");
-		}else if(text == "") {
-			this.data = new char[1];
-			this.data[0] = 0;
+		}else if(text.isEmpty()) {
+			data = new char[1];
 		}else{
-			this.data = text.toCharArray();
+			data = text.toCharArray();
 		}
-		this.currentIndex = 0;
-		this.uTagu = false;
+		currentIndex = 0;
+		uTagu = false;
 	}
 	
 	public LexToken nextToken() {
-		if(!(this.token == null) && this.token.getType() == LexTokenType.EOF) {
+		if(!(token == null) && token.getType() == LexTokenType.EOF) {
 			throw new SmartScriptParserException("Kraj niza!");
 		}
-		if(this.currentIndex >= this.data.length || this.data[this.currentIndex] == 0) {
-			this.token = new LexToken(LexTokenType.EOF, null);
-			this.uTagu = false;
-			return this.token;
+		if(currentIndex >= data.length || data[currentIndex] == 0) {
+			token = new LexToken(LexTokenType.EOF, null);
+			uTagu = false;
+			return token;
 		}
-		//while(this.currentIndex != this.data.length) {
-			if(!this.uTagu) {
-				if(!(this.data[this.currentIndex] == '{' && this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '$')) {//obrađuj tekst
-					String rijec;
-					if(this.data[this.currentIndex] == '\\') {
-						if(this.currentIndex + 1 < this.data.length && (this.data[this.currentIndex + 1] == '\\'
-								|| this.data[this.currentIndex + 1] == '{')) {
-							rijec = Character.toString(this.data[this.currentIndex + 1]);
-							this.currentIndex += 2;
+			if(!uTagu) {
+				if(!(data[currentIndex] == '{' && currentIndex + 1 < data.length && data[currentIndex + 1] == '$')) {//obrađuj tekst
+					StringBuilder rijec;
+					if(data[currentIndex] == '\\') {
+						if(currentIndex + 1 < data.length && (data[currentIndex + 1] == '\\'
+								|| data[currentIndex + 1] == '{')) {
+							rijec = new StringBuilder(Character.toString(data[currentIndex + 1]));
+							currentIndex += 2;
 						}else {
 							throw new SmartScriptParserException("Kriva uporaba znaka \\");
 						}
 					}else {
-					rijec = Character.toString(this.data[this.currentIndex]);
-					this.currentIndex++;
+					rijec = new StringBuilder(Character.toString(data[currentIndex]));
+					currentIndex++;
 					}
-					while(this.currentIndex != this.data.length && !(this.data[this.currentIndex] == '{' 
-							&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '$')) {
-						if(this.data[this.currentIndex] == '\\') {
-							if(this.currentIndex + 1 < this.data.length && (this.data[this.currentIndex + 1] == '\\'
-									|| this.data[this.currentIndex + 1] == '{')) {
-								rijec += Character.toString(this.data[this.currentIndex + 1]);
-								this.currentIndex += 2;
+					while(currentIndex != data.length && !(data[currentIndex] == '{' 
+							&& currentIndex + 1 < data.length && data[currentIndex + 1] == '$')) {
+						if(data[currentIndex] == '\\') {
+							if(currentIndex + 1 < data.length && (data[currentIndex + 1] == '\\'
+									|| data[currentIndex + 1] == '{')) {
+								rijec.append(data[currentIndex + 1]);
+								currentIndex += 2;
 							}else {
 								throw new SmartScriptParserException("Kriva uporaba znaka \\");
 							}
 						}else {
-							rijec += Character.toString(this.data[this.currentIndex]);
-							this.currentIndex++;
+							rijec.append(data[currentIndex]);
+							currentIndex++;
 						}
 					}
-					this.token = new LexToken(LexTokenType.TEKST, new ElementString(rijec, false));
-					this.uTagu = false;
-					return this.token;
+					token = new LexToken(LexTokenType.TEKST, new ElementString(rijec.toString(), false));
+					uTagu = false;
+					return token;
 				}else {//obrađuj tag
-					this.currentIndex += 2;
-					//while(this.data[this.currentIndex] == '$' && this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-						while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-							this.currentIndex++;
+					currentIndex += 2;
+						while(data[currentIndex] == ' ') {//otkloni razmake
+							currentIndex++;
 						}
-						if(Character.toLowerCase(this.data[this.currentIndex]) == 'e'
-								&& this.currentIndex + 1 < this.data.length
-								&& !(Character.toLowerCase(this.data[this.currentIndex + 1]) != 'n')
-								&& this.currentIndex + 2 < this.data.length
-								&& !(Character.toLowerCase(this.data[this.currentIndex + 2]) != 'd')) {//ako je END
-							this.currentIndex += 3;
-							while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-								this.currentIndex++;
+						if(Character.toLowerCase(data[currentIndex]) == 'e'
+								&& currentIndex + 1 < data.length
+								&& Character.toLowerCase(data[currentIndex + 1]) == 'n'
+								&& currentIndex + 2 < data.length
+								&& Character.toLowerCase(data[currentIndex + 2]) == 'd') {//ako je END
+							currentIndex += 3;
+							while(data[currentIndex] == ' ') {//otkloni razmake
+								currentIndex++;
 							}
-							if(!(this.data[this.currentIndex] == '$' && this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}')) {
+							if(!(data[currentIndex] == '$' && currentIndex + 1 < data.length && data[currentIndex + 1] == '}')) {
 								throw new SmartScriptParserException("Krivo definiran tag END!");
 							}else {
-								this.token = new LexToken(LexTokenType.TAGEND, new ElementString("END", false));
-								this.uTagu = false;
-								this.currentIndex += 2;
-								return this.token;
+								token = new LexToken(LexTokenType.TAGEND, new ElementString("END", false));
+								uTagu = false;
+								currentIndex += 2;
+								return token;
 							}
-						}else if(Character.toLowerCase(this.data[this.currentIndex]) == 'f'
-								&& this.currentIndex + 1 < this.data.length
-								&& !(Character.toLowerCase(this.data[this.currentIndex + 1]) != 'o')
-								&& this.currentIndex + 2 < this.data.length
-								&& !(Character.toLowerCase(this.data[this.currentIndex + 2]) != 'r')) {//ako je FOR
-							this.currentIndex += 3;
-							while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-								this.currentIndex++;
+						}else if(Character.toLowerCase(data[currentIndex]) == 'f'
+								&& currentIndex + 1 < data.length
+								&& Character.toLowerCase(data[currentIndex + 1]) == 'o'
+								&& currentIndex + 2 < data.length
+								&& Character.toLowerCase(data[currentIndex + 2]) == 'r') {//ako je FOR
+							currentIndex += 3;
+							while(data[currentIndex] == ' ') {//otkloni razmake
+								currentIndex++;
 							}
-							this.token = new LexToken(LexTokenType.TAGFOR, new ElementString("FOR", false));
-							this.uTagu = true;
-							return this.token;
-						}else if(this.data[this.currentIndex] == '=') {//ako je ECHO
-							this.currentIndex++;
-							while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-								this.currentIndex++;
+							token = new LexToken(LexTokenType.TAGFOR, new ElementString("FOR", false));
+							uTagu = true;
+							return token;
+						}else if(data[currentIndex] == '=') {//ako je ECHO
+							currentIndex++;
+							while(data[currentIndex] == ' ') {//otkloni razmake
+								currentIndex++;
 							}
-							this.token = new LexToken(LexTokenType.TAGECHO, new ElementString("ECHO", false));
-							this.uTagu = true;
-							return this.token;
+							token = new LexToken(LexTokenType.TAGECHO, new ElementString("ECHO", false));
+							uTagu = true;
+							return token;
 						}else {
 							throw new SmartScriptParserException("KRIVO DEFINIRAN TAG!");
 						}
-					//}
 				}
 			}else {//DO TUDA
-				//dovrši
-				while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-					this.currentIndex++;
+				while(data[currentIndex] == ' ') {//otkloni razmake
+					currentIndex++;
 				}
-				/*if(this.data[this.currentIndex] == '$'
-						&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-					
-				}*/
-				if(Character.isLetter(this.data[this.currentIndex])) {//ako je VARIJABLA
-					String varijabla = Character.toString(this.data[this.currentIndex]);
-					this.currentIndex++;
-					while(this.data[this.currentIndex] != ' ' && this.data[this.currentIndex] != '$') {
-						if(Character.isLetter(this.data[this.currentIndex]) 
-								|| Character.isDigit(this.data[this.currentIndex])
-								|| this.data[this.currentIndex] == '_') {
-							varijabla += Character.toString(this.data[this.currentIndex]);
+				if(Character.isLetter(data[currentIndex])) {//ako je VARIJABLA
+					String varijabla = Character.toString(data[currentIndex]);
+					currentIndex++;
+					while(data[currentIndex] != ' ' && data[currentIndex] != '$') {
+						if(Character.isLetter(data[currentIndex]) 
+								|| Character.isDigit(data[currentIndex])
+								|| data[currentIndex] == '_') {
+							varijabla += Character.toString(data[currentIndex]);
 						}else {
 							throw new SmartScriptParserException("KRIVO DEFINIRANA VARIJABLA!");
 						}
-						this.currentIndex++;
+						currentIndex++;
 					}
-					while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-						this.currentIndex++;
+					while(data[currentIndex] == ' ') {//otkloni razmake
+						currentIndex++;
 					}
-					if(this.data[this.currentIndex] == '$' 
-							&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}'){
-						this.currentIndex += 2;
-						this.token = new LexToken(LexTokenType.VARIABLA, new ElementVariable(varijabla));
-						this.uTagu = false;
-						return this.token;
-					}else {
-						this.token = new LexToken(LexTokenType.VARIABLA, new ElementVariable(varijabla));
-						this.uTagu = true;
-						return this.token;
-					}/*else{
-						throw new SmartScriptParserException("KRIVO DEFINIRAN KRAJ TAGA!");
-					}*/
-				}else if(this.data[this.currentIndex] == '@') {//ako je FUNKCIJA
-					String funkcija = Character.toString(this.data[this.currentIndex]);;
-					//this.currentIndex++;
-					if(Character.isLetter(this.data[this.currentIndex + 1])) {
-						this.currentIndex++;
-						funkcija += Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
-						while(this.data[this.currentIndex] != ' ' && this.data[this.currentIndex] != '$') {
-							if(Character.isLetter(this.data[this.currentIndex]) 
-									|| Character.isDigit(this.data[this.currentIndex])
-									|| this.data[this.currentIndex] == '_') {
-								funkcija += Character.toString(this.data[this.currentIndex]);
+					if(data[currentIndex] == '$' 
+							&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}'){
+						currentIndex += 2;
+						token = new LexToken(LexTokenType.VARIABLA, new ElementVariable(varijabla));
+						uTagu = false;
+                    }else {
+						token = new LexToken(LexTokenType.VARIABLA, new ElementVariable(varijabla));
+						uTagu = true;
+                    }
+                    return token;
+                }else if(data[currentIndex] == '@') {//ako je FUNKCIJA
+					String funkcija = Character.toString(data[currentIndex]);
+					if(Character.isLetter(data[currentIndex + 1])) {
+						currentIndex++;
+						funkcija += Character.toString(data[currentIndex]);
+						currentIndex++;
+						while(data[currentIndex] != ' ' && data[currentIndex] != '$') {
+							if(Character.isLetter(data[currentIndex]) 
+									|| Character.isDigit(data[currentIndex])
+									|| data[currentIndex] == '_') {
+								funkcija += Character.toString(data[currentIndex]);
 							}else {
 								throw new SmartScriptParserException("KRIVO DEFINIRANA FUNKCIJA!");
 							}
-							this.currentIndex++;
+							currentIndex++;
 						}
-						while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-							this.currentIndex++;
+						while(data[currentIndex] == ' ') {//otkloni razmake
+							currentIndex++;
 						}
-						if(this.data[this.currentIndex] == '$' 
-								&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}'){
-							this.currentIndex += 2;
-							this.token = new LexToken(LexTokenType.FUNKCIJA, new ElementFunction(funkcija));
-							this.uTagu = false;
-							return this.token;
-						}else {
-							this.token = new LexToken(LexTokenType.FUNKCIJA, new ElementFunction(funkcija));
-							this.uTagu = true;
-							return this.token;
-						}/*else{
-							throw new SmartScriptParserException("KRIVO DEFINIRAN KRAJ TAGA!");
-						}*/
-					}else {
+						if(data[currentIndex] == '$' 
+								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}'){
+							currentIndex += 2;
+							token = new LexToken(LexTokenType.FUNKCIJA, new ElementFunction(funkcija));
+							uTagu = false;
+                        }else {
+							token = new LexToken(LexTokenType.FUNKCIJA, new ElementFunction(funkcija));
+							uTagu = true;
+                        }
+                        return token;
+                    }else {
 						throw new SmartScriptParserException("KRIVO DEFINIRANA FUNKCIJA!");
 					}
-				}else if(this.data[this.currentIndex] == '+' 
-						|| this.data[this.currentIndex] == '-'
-						|| this.data[this.currentIndex] == '*'
-						|| this.data[this.currentIndex] == '/'
-						|| this.data[this.currentIndex] == '^') {//ako je OPERATOR
-					if((this.data[this.currentIndex] == '+' 
-							|| this.data[this.currentIndex] == '-') 
-							&& this.currentIndex + 1 < this.data.length
-							&& Character.isDigit(this.data[this.currentIndex + 1])) {//parsiraj kao broj
-						String broj = Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
-						while(Character.isDigit(this.data[this.currentIndex])) {
-							broj += Character.toString(this.data[this.currentIndex]);
-							this.currentIndex++;
+				}else if(data[currentIndex] == '+' 
+						|| data[currentIndex] == '-'
+						|| data[currentIndex] == '*'
+						|| data[currentIndex] == '/'
+						|| data[currentIndex] == '^') {//ako je OPERATOR
+					if((data[currentIndex] == '+' 
+							|| data[currentIndex] == '-') 
+							&& currentIndex + 1 < data.length
+							&& Character.isDigit(data[currentIndex + 1])) {//parsiraj kao broj
+						StringBuilder broj = new StringBuilder(Character.toString(data[currentIndex]));
+						currentIndex++;
+						while(Character.isDigit(data[currentIndex])) {
+							broj.append(data[currentIndex]);
+							currentIndex++;
 						}
-						if(this.data[this.currentIndex] == '.') {
-							broj += Character.toString(this.data[this.currentIndex]);
-							while(Character.isDigit(this.data[this.currentIndex])) {
-								broj += Character.toString(this.data[this.currentIndex]);
-								this.currentIndex++;
+						if(data[currentIndex] == '.') {
+							broj.append(data[currentIndex]);
+							while(Character.isDigit(data[currentIndex])) {
+								broj.append(data[currentIndex]);
+								currentIndex++;
 							}
-							double brojD = Double.parseDouble(broj);
-							while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-								this.currentIndex++;
+							double brojD = Double.parseDouble(broj.toString());
+							while(data[currentIndex] == ' ') {//otkloni razmake
+								currentIndex++;
 							}
-							if(this.data[this.currentIndex] == '$' 
-									&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-								this.currentIndex += 2;
-								this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-								this.uTagu = false;
+							if(data[currentIndex] == '$' 
+									&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
+								currentIndex += 2;
+								token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
+								uTagu = false;
 							}else {
-								this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-								this.uTagu = true;
+								token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
+								uTagu = true;
 							}
 						}
-						int brojI = Integer.parseInt(broj);
-						while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-							this.currentIndex++;
+						int brojI = Integer.parseInt(broj.toString());
+						while(data[currentIndex] == ' ') {//otkloni razmake
+							currentIndex++;
 						}
-						if(this.data[this.currentIndex] == '$' 
-								&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-							this.currentIndex += 2;
-							this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							this.uTagu = false;
+						if(data[currentIndex] == '$' 
+								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
+							currentIndex += 2;
+							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
+							uTagu = false;
 						}else {
-							this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							this.uTagu = true;
+							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
+							uTagu = true;
 						}
 					}else {
-						String operator = Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
+						String operator = Character.toString(data[currentIndex]);
+						currentIndex++;
 						//parsiraj kao operator
-						while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-							this.currentIndex++;
+						while(data[currentIndex] == ' ') {//otkloni razmake
+							currentIndex++;
 						}
-						if(this.data[this.currentIndex] == '$' 
-								&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-							this.currentIndex += 2;
-							this.token = new LexToken(LexTokenType.OPERATOR, new ElementOperator(operator));
-							this.uTagu = false;
-							return this.token;
-						}else {
-							//this.currentIndex++;
-							this.token = new LexToken(LexTokenType.OPERATOR, new ElementOperator(operator));
-							this.uTagu = true;
-							return this.token;
-						}
-						//this.currentIndex++;
-					}
-				}else if(this.data[this.currentIndex] == '"') {//ako je string
-					this.currentIndex++;
-					String string;
-					//String slovo;
-					if(this.data[this.currentIndex] == '\\') {
-						if(this.currentIndex + 1 < this.data.length && (this.data[this.currentIndex + 1] == '\\'
-								|| this.data[this.currentIndex + 1] == '"')) {
-							string = Character.toString(this.data[this.currentIndex + 1]);
-							this.currentIndex += 1;
-						}else if(this.currentIndex + 1 < this.data.length && (this.data[this.currentIndex + 1] == 'n'
-								|| this.data[this.currentIndex + 1] == 't'
-								|| this.data[this.currentIndex + 1] == 'r')) {
-							if(this.data[this.currentIndex + 1] == 'n') {
-								string = Character.toString(10);
-							}else if(this.data[this.currentIndex + 1] == 'r') {
-								string = Character.toString(13);
+						if(data[currentIndex] == '$' 
+								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
+							currentIndex += 2;
+							token = new LexToken(LexTokenType.OPERATOR, new ElementOperator(operator));
+							uTagu = false;
+                        }else {
+							token = new LexToken(LexTokenType.OPERATOR, new ElementOperator(operator));
+							uTagu = true;
+                        }
+                        return token;
+                    }
+				}else if(data[currentIndex] == '"') {//ako je string
+					currentIndex++;
+					StringBuilder string;
+					if(data[currentIndex] == '\\') {
+						if(currentIndex + 1 < data.length && (data[currentIndex + 1] == '\\'
+								|| data[currentIndex + 1] == '"')) {
+							string = new StringBuilder(Character.toString(data[currentIndex + 1]));
+							currentIndex += 1;
+						}else if(currentIndex + 1 < data.length && (data[currentIndex + 1] == 'n'
+								|| data[currentIndex + 1] == 't'
+								|| data[currentIndex + 1] == 'r')) {
+							if(data[currentIndex + 1] == 'n') {
+								string = new StringBuilder(Character.toString(10));
+							}else if(data[currentIndex + 1] == 'r') {
+								string = new StringBuilder(Character.toString(13));
 							}else {
-								string = Character.toString(9);
+								string = new StringBuilder(Character.toString(9));
 							}
-							this.currentIndex++;
+							currentIndex++;
 						}else{
 							throw new SmartScriptParserException("Kriva uporaba znaka \\");
 						}
 					}else {
-						string = Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
+						string = new StringBuilder(Character.toString(data[currentIndex]));
+						currentIndex++;
 					}
-					while(this.data[this.currentIndex] != '"') {
-						if(this.data[this.currentIndex] == '\\') {
-							if(this.currentIndex + 1 < this.data.length && (this.data[this.currentIndex + 1] == '\\'
-									|| this.data[this.currentIndex + 1] == '"')) {
-								string += Character.toString(this.data[this.currentIndex + 1]);
-								this.currentIndex += 1;
-							}else if(this.currentIndex + 1 < this.data.length && (this.data[this.currentIndex + 1] == 'n'
-									|| this.data[this.currentIndex + 1] == 't'
-									|| this.data[this.currentIndex + 1] == 'r')) {
-								if(this.data[this.currentIndex + 1] == 'n') {
-									string += Character.toString(10);
-								}else if(this.data[this.currentIndex + 1] == 'r') {
-									string += Character.toString(13);
+					while(data[currentIndex] != '"') {
+						if(data[currentIndex] == '\\') {
+							if(currentIndex + 1 < data.length && (data[currentIndex + 1] == '\\'
+									|| data[currentIndex + 1] == '"')) {
+								string.append(data[currentIndex + 1]);
+								currentIndex += 1;
+							}else if(currentIndex + 1 < data.length && (data[currentIndex + 1] == 'n'
+									|| data[currentIndex + 1] == 't'
+									|| data[currentIndex + 1] == 'r')) {
+								if(data[currentIndex + 1] == 'n') {
+									string.append(Character.toString(10));
+								}else if(data[currentIndex + 1] == 'r') {
+									string.append(Character.toString(13));
 								}else {
-									string += Character.toString(9);
+									string.append(Character.toString(9));
 								}
-								this.currentIndex++;
+								currentIndex++;
 							}else {
 								throw new SmartScriptParserException("Kriva uporaba znaka \\");
 							}
 						}else {
-							string += Character.toString(this.data[this.currentIndex]);
+							string.append(data[currentIndex]);
 						}
-						//string += Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
+						currentIndex++;
 					}
-					this.currentIndex++;
-					while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-						this.currentIndex++;
+					currentIndex++;
+					while(data[currentIndex] == ' ') {//otkloni razmake
+						currentIndex++;
 					}
-					if(this.data[this.currentIndex] == '$' 
-							&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}'){
-						this.currentIndex += 2;
-						this.token = new LexToken(LexTokenType.STRINGUTAGU, new ElementString(string, false));
-						this.uTagu = false;
-						return this.token;
-					}else {
-						this.token = new LexToken(LexTokenType.STRINGUTAGU, new ElementString(string, true));
-						this.uTagu = true;
-						return this.token;
-					}/*else{
-						throw new SmartScriptParserException("KRIVO DEFINIRAN KRAJ TAGA!");
-					}*/
-				}else if(Character.isDigit(this.data[this.currentIndex])) {//ako je samo broj
-					String broj = Character.toString(this.data[this.currentIndex]);
-					this.currentIndex++;
-					while(Character.isDigit(this.data[this.currentIndex])) {
-						broj += Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
+					if(data[currentIndex] == '$' 
+							&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}'){
+						currentIndex += 2;
+						token = new LexToken(LexTokenType.STRINGUTAGU, new ElementString(string.toString(), false));
+						uTagu = false;
+                    }else {
+						token = new LexToken(LexTokenType.STRINGUTAGU, new ElementString(string.toString(), true));
+						uTagu = true;
+                    }
+                    return token;
+                }else if(Character.isDigit(data[currentIndex])) {//ako je samo broj
+					StringBuilder broj = new StringBuilder(Character.toString(data[currentIndex]));
+					currentIndex++;
+					while(Character.isDigit(data[currentIndex])) {
+						broj.append(data[currentIndex]);
+						currentIndex++;
 					}
-					if(this.data[this.currentIndex] == '.') {
-						broj += Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
-						while(Character.isDigit(this.data[this.currentIndex])) {
-							broj += Character.toString(this.data[this.currentIndex]);
-							this.currentIndex++;
+					if(data[currentIndex] == '.') {
+						broj.append(data[currentIndex]);
+						currentIndex++;
+						while(Character.isDigit(data[currentIndex])) {
+							broj.append(data[currentIndex]);
+							currentIndex++;
 						}
-						double brojD = Double.parseDouble(broj);
-						while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-							this.currentIndex++;
+						double brojD = Double.parseDouble(broj.toString());
+						while(data[currentIndex] == ' ') {//otkloni razmake
+							currentIndex++;
 						}
-						if(this.data[this.currentIndex] == '$' 
-								&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-							this.currentIndex += 2;
-							this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-							this.uTagu = false;
+						if(data[currentIndex] == '$' 
+								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
+							currentIndex += 2;
+							token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
+							uTagu = false;
 						}else {
-							this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-							this.uTagu = true;
+							token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
+							uTagu = true;
 						}
 					}else {
-						int brojI = Integer.parseInt(broj);
-						while(this.data[this.currentIndex] == ' ') {//otkloni razmake
-							this.currentIndex++;
+						int brojI = Integer.parseInt(broj.toString());
+						while(data[currentIndex] == ' ') {//otkloni razmake
+							currentIndex++;
 						}
-						if(this.data[this.currentIndex] == '$' 
-								&& this.currentIndex + 1 < this.data.length && this.data[this.currentIndex + 1] == '}') {
-							this.currentIndex += 2;
-							this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							this.uTagu = false;
+						if(data[currentIndex] == '$' 
+								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
+							currentIndex += 2;
+							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
+							uTagu = false;
 						}else {
-							this.token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							this.uTagu = true;
+							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
+							uTagu = true;
 						}
 					}
 				}else{
 					throw new SmartScriptParserException("KRIVO DEFINIRAN TAG!");
 				}
 			}
-		//}
-		return this.token;
+		return token;
 	}
 	
 	public boolean isuTagu() {
-		return uTagu;
+		return !uTagu;
 	}
 
 	public LexToken getToken() {
-		return this.token;
+		return token;
 	}
 }

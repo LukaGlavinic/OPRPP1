@@ -10,9 +10,8 @@ public class DocumentNode extends Node{
 	public boolean equals(Object obj) {
 	    if (obj == null) return false;
 	    
-	    if (obj instanceof DocumentNode) {
-	        DocumentNode dn = (DocumentNode)obj;
-	        if(dn.numberOfChildren() != numberOfChildren()) return false;
+	    if (obj instanceof DocumentNode dn) {
+            if(dn.numberOfChildren() != numberOfChildren()) return false;
 	        
 	        for(int i = 0; i < numberOfChildren(); i++) {
 	            if(!dn.getChild(i).equals(getChild(i))) return false;

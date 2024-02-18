@@ -14,9 +14,8 @@ public class Lexer {
 	public Lexer(String text) {
 		if(text == null) {
 			throw new NullPointerException("Predani tekst je null!");
-		}else if(text == "") {
+		}else if(text.isEmpty()) {
 			this.data = new char[1];
-			this.data[0] = 0;
 		}else{
 			this.data = text.toCharArray();
 		}
@@ -25,7 +24,7 @@ public class Lexer {
 	}
 	/**
 	 * generira i vraća sljedeći token, baca grešku ako je pogrešno pozvan, radi u dva stanja rada
-	 * @return
+	 * @return sljedeći token
 	 */
 	public Token nextToken() {
 		if(!(this.token == null) && this.token.getType() == TokenType.EOF) {
@@ -47,18 +46,18 @@ public class Lexer {
 			return this.token;
 		}
 		
-		while(this.currentIndex != this.data.length) {
+		while(true) {
 			if(this.trenStanje == LexerState.BASIC) {//RAD U STANJE BASIC
 				if(Character.isLetter(this.data[this.currentIndex])
 						|| this.data[this.currentIndex] == '\\') {
-					String rijec;
+					StringBuilder rijec;
 					if(Character.isLetter(this.data[this.currentIndex])) {
-						rijec = Character.toString(this.data[this.currentIndex]);
+						rijec = new StringBuilder(Character.toString(this.data[this.currentIndex]));
 						this.currentIndex++;
 					}else if((this.currentIndex + 1 < this.data.length)
 							&& (this.data[this.currentIndex + 1] == '\\'
 							|| Character.isDigit(this.data[this.currentIndex + 1]))) {
-						rijec = Character.toString(this.data[this.currentIndex + 1]);
+						rijec = new StringBuilder(Character.toString(this.data[this.currentIndex + 1]));
 						this.currentIndex += 2;
 					}else {
 						throw new LexerException("Samo escape!");
@@ -66,38 +65,32 @@ public class Lexer {
 					while(this.currentIndex < this.data.length && (Character.isLetter(this.data[this.currentIndex])
 							|| (this.data[this.currentIndex] == '\\'))) {
 						if(Character.isLetter(this.data[this.currentIndex])) {
-							rijec += Character.toString(this.data[this.currentIndex]);
+							rijec.append(this.data[this.currentIndex]);
 							this.currentIndex++;
 						}else if((this.currentIndex + 1 < this.data.length)
 								&& (this.data[this.currentIndex + 1] == '\\'
 								|| Character.isDigit(this.data[this.currentIndex + 1]))){
-							rijec += Character.toString(this.data[this.currentIndex + 1]);
+							rijec.append(this.data[this.currentIndex + 1]);
 							this.currentIndex += 2;
 						}else {
 							throw new LexerException("Samo escape!");
 						}
 					}
-					this.token = new Token(TokenType.WORD, rijec);
+					this.token = new Token(TokenType.WORD, rijec.toString());
 					return this.token;
-				}else if(this.currentIndex < this.data.length && ((Character.isDigit(this.data[this.currentIndex])) 
-						|| 
-						((this.currentIndex + 1 < this.data.length) 
-								&& ((this.data[this.currentIndex] == '+' && Character.isDigit(this.data[this.currentIndex + 1])))))) {
-					String broj;
-					if(Character.isDigit(this.data[this.currentIndex])) {
-						broj = Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
-					}else {
-						this.currentIndex++;
-						broj = Character.toString(this.data[this.currentIndex]);
-						this.currentIndex++;
-					}
-					while(this.currentIndex < this.data.length && Character.isDigit(this.data[this.currentIndex])) {
-						broj += Character.toString(this.data[this.currentIndex]);
+				}else if(Character.isDigit(this.data[this.currentIndex]) || this.currentIndex + 1 < this.data.length && this.data[this.currentIndex] == '+' && Character.isDigit(this.data[this.currentIndex + 1])) {
+					StringBuilder broj;
+                    if (!Character.isDigit(this.data[this.currentIndex])) {
+                        this.currentIndex++;
+                    }
+                    broj = new StringBuilder(Character.toString(this.data[this.currentIndex]));
+                    this.currentIndex++;
+                    while(this.currentIndex < this.data.length && Character.isDigit(this.data[this.currentIndex])) {
+						broj.append(this.data[this.currentIndex]);
 						this.currentIndex++;
 					}
 					try {
-						Long brojL = Long.parseLong(broj);
+						Long brojL = Long.parseLong(broj.toString());
 						this.token = new Token(TokenType.NUMBER, brojL);
 						return this.token;
 					}catch(Exception e) {
@@ -114,18 +107,18 @@ public class Lexer {
 					return this.token;
 				}
 			}else {//dio za Lexer u stanju EXTENDED
-				String rijec = null;
-				if(this.currentIndex < this.data.length && this.data[this.currentIndex] != '#') {
-					rijec = Character.toString(this.data[this.currentIndex]);
+				StringBuilder rijec;
+				if(this.data[this.currentIndex] != '#') {
+					rijec = new StringBuilder(Character.toString(this.data[this.currentIndex]));
 					this.currentIndex++;
 					while(this.currentIndex < this.data.length && !(this.data[this.currentIndex] == '\r' || 
 							this.data[this.currentIndex] == '\n' || 
 							this.data[this.currentIndex] == '\t' || 
 							this.data[this.currentIndex] == ' ' || this.data[this.currentIndex] == '#')) {
-						rijec += Character.toString(this.data[this.currentIndex]);
+						rijec.append(this.data[this.currentIndex]);
 						this.currentIndex++;
 					}
-					this.token = new Token(TokenType.WORD, rijec);
+					this.token = new Token(TokenType.WORD, rijec.toString());
 					return this.token;
 				}else if(this.data[this.currentIndex] == '#') {
 					this.token = new Token(TokenType.SYMBOL, this.data[this.currentIndex]);
@@ -135,8 +128,7 @@ public class Lexer {
 				}
 			}
 		}
-		return this.token;
-	}
+    }
 	/**
 	 * može se pozivati više puta; ne pokreće generiranje sljedećeg tokena
 	 * @return zadnji generirani token
@@ -146,7 +138,7 @@ public class Lexer {
 	}
 	/**
 	 * postavlja stanje rada lexera
-	 * @param state
+	 * @param state stanje lexera
 	 */
 	public void setState(LexerState state) {
 		if(state == null) {

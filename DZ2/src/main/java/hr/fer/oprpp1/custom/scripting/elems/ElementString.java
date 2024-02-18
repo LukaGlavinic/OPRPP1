@@ -2,8 +2,8 @@ package hr.fer.oprpp1.custom.scripting.elems;
 
 public class ElementString extends Element{
 
-	private String value;
-	private boolean tag;
+	private final String value;
+	private final boolean tag;
 	
 	public ElementString(String value, boolean tag) {
 		super();
@@ -14,9 +14,9 @@ public class ElementString extends Element{
 	@Override
 	public String asText() {
 		 if(tag) {
-		     return "\"" + this.value + "\"";
+		     return "\"" + value + "\"";
 		 } else {
-		     return this.value;
+		     return value;
 		 }
 	}
 }

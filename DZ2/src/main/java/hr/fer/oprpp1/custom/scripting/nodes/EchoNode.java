@@ -4,10 +4,10 @@ import hr.fer.oprpp1.custom.scripting.elems.Element;
 
 public class EchoNode extends Node{
 
-	private Element[] elements;
+	private final Element[] elements;
 
 	public Element[] getElements() {
-		return this.elements;
+		return elements;
 	}
 
 	public EchoNode(Element[] elements) {
@@ -17,15 +17,13 @@ public class EchoNode extends Node{
 	
 	@Override
 	public boolean equals(Object obj) {
-		//TO DO
 		if (this == obj) {
             return true;
         }
-        if (obj instanceof EchoNode) {
-        	EchoNode node = (EchoNode)obj;
-        	Element[] elementi = node.elements;
+        if (obj instanceof EchoNode node) {
+            Element[] elementi = node.elements;
         	
-        	Element[] elementi2 = this.getElements();
+        	Element[] elementi2 = getElements();
         	
         	for(int index = 0; index < elementi.length; index++) {
         		if (!elementi[index].equals(elementi2[index]))return false;
@@ -37,11 +35,11 @@ public class EchoNode extends Node{
 	
 	@Override
     public String toString() {
-       String document = "{$= ";
-       for(Element e : this.elements) {
-           document += e.asText() + " ";
+       StringBuilder document = new StringBuilder("{$= ");
+       for(Element e : elements) {
+           document.append(e.asText()).append(" ");
        }
-       document += "$}";
-       return document;
+       document.append("$}");
+       return document.toString();
     }
 }

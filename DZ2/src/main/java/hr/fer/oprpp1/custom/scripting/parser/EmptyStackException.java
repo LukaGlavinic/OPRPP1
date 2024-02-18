@@ -1,7 +1,10 @@
 package hr.fer.oprpp1.custom.scripting.parser;
 
+import java.io.Serial;
+
 public class EmptyStackException extends RuntimeException {
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public EmptyStackException() {}

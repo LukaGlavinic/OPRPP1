@@ -4,8 +4,8 @@ import hr.fer.oprpp1.custom.scripting.elems.Element;
 
 public class LexToken {
 	
-	private LexTokenType type;
-	private Element value;
+	private final LexTokenType type;
+	private final Element value;
 	
 	public LexToken(LexTokenType type, Element value) {
 		this.type = type;
@@ -13,10 +13,10 @@ public class LexToken {
 	}
 
 	public Element getValue() {
-		return this.value;
+		return value;
 	}
 	
 	public LexTokenType getType() {
-		return this.type;
+		return type;
 	}
 }

@@ -2,7 +2,7 @@ package hr.fer.oprpp1.custom.scripting.elems;
 
 public class ElementOperator extends Element{
 
-	private String symbol;
+	private final String symbol;
 	
 	public ElementOperator(String symbol) {
 		super();
@@ -11,6 +11,6 @@ public class ElementOperator extends Element{
 
 	@Override
 	public String asText() {
-		return this.symbol;
+		return symbol;
 	}
 }

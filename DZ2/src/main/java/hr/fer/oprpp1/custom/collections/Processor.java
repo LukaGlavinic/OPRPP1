@@ -7,7 +7,7 @@ package hr.fer.oprpp1.custom.collections;
 public interface Processor {
 	/**
 	 * Obavlja neki posao nad objektom
-	 * @param value
+	 * @param value vrijednost za procesiranje
 	 */
-	public abstract void process(Object value);
+    void process(Object value);
 }

@@ -5,13 +5,13 @@ import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
 
 public class ForLoopNode extends Node{
 
-	private ElementVariable variable;
+	private final ElementVariable variable;
 	
-	private Element startExpression;
+	private final Element startExpression;
 	
-	private Element endExpression;
+	private final Element endExpression;
 	
-	private Element stepExpression;
+	private final Element stepExpression;
 
 	public ForLoopNode(ElementVariable variable, Element startExpression, Element endExpression, Element stepExpression) {
 		super();
@@ -22,19 +22,19 @@ public class ForLoopNode extends Node{
 	}
 
 	public ElementVariable getVariable() {
-		return this.variable;
+		return variable;
 	}
 
 	public Element getStartExpression() {
-		return this.startExpression;
+		return startExpression;
 	}
 
 	public Element getEndExpression() {
-		return this.endExpression;
+		return endExpression;
 	}
 
 	public Element getStepExpression() {
-		return this.stepExpression;
+		return stepExpression;
 	}
 	
 	@Override
@@ -42,23 +42,20 @@ public class ForLoopNode extends Node{
 	    if (this == obj) {
             return true;
         }
-        if (obj instanceof ForLoopNode) {
-            ForLoopNode node = (ForLoopNode)obj;
-        
-            if(node.startExpression.equals(this.startExpression) &&
-                    node.endExpression.equals(this.endExpression) && 
-                    node.stepExpression.equals(this.stepExpression)&&
-                    node.variable.equals(this.variable)) {
-                return true;
-            }
+        if (obj instanceof ForLoopNode node) {
+
+            return node.startExpression.equals(startExpression) &&
+                    node.endExpression.equals(endExpression) &&
+                    node.stepExpression.equals(stepExpression) &&
+                    node.variable.equals(variable);
         }
         return false;
 	}
 	@Override
     public String toString() {
        String djeca = "{$for ";
-       djeca += this.variable.asText() + " " + this.startExpression.asText() + " " + this.endExpression.asText() + " ";
-       if(this.stepExpression != null) djeca += this.stepExpression.asText() + " ";
+       djeca += variable.asText() + " " + startExpression.asText() + " " + endExpression.asText() + " ";
+       if(stepExpression != null) djeca += stepExpression.asText() + " ";
        djeca += "$}";
        djeca += super.toString();
        djeca += "{$end$}";

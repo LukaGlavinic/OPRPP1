@@ -9,17 +9,17 @@ public interface ElementsGetter {
  * metoda ispitiju postojanje sljedeèeg elementa
  * @return true ako postoji sljedeæi element
  */
-	public boolean hasNextElement();
+boolean hasNextElement();
 	/**
 	 * metoda vraæa objekt trenutnog elementa
 	 * @return objekt trenutnog elementa
 	 */
-	public Object getNextElement();
+    Object getNextElement();
 	/**
 	 * zadana metoda za procesiranje preostalih èlanova
 	 * @param p procesor æija se metoda process poziva za procesiranje preostalih elemenata
 	 */
-	default public void processRemaining(Processor p) {
+	default void processRemaining(Processor p) {
 		while(this.hasNextElement()) {
 			p.process(this.getNextElement());
 		}

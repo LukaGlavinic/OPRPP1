@@ -77,7 +77,7 @@ public class SmartScriptParser {
                     }else {
                         throw new SmartScriptParserException("Nepravilan broj varijabli u FOR petlji!");
                     }
-                    if(!lexer.isuTagu()) {
+                    if(lexer.isuTagu()) {
                         break;
                     }
                     i++;
@@ -112,7 +112,7 @@ public class SmartScriptParser {
                     this.brojVarijabliUEcho++;
  
                 }
-                if(!lexer.isuTagu()) {
+                if(lexer.isuTagu()) {
                     break; 
                 }
                 toke = lexer.nextToken();

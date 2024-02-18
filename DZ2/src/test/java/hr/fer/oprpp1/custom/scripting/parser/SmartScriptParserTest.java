@@ -1,18 +1,20 @@
 package hr.fer.oprpp1.custom.scripting.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import hr.fer.oprpp1.custom.scripting.elems.*;
+import hr.fer.oprpp1.custom.scripting.nodes.DocumentNode;
+import hr.fer.oprpp1.custom.scripting.nodes.EchoNode;
+import hr.fer.oprpp1.custom.scripting.nodes.ForLoopNode;
+import hr.fer.oprpp1.custom.scripting.nodes.TextNode;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import hr.fer.oprpp1.custom.scripting.elems.*;
-import hr.fer.oprpp1.custom.scripting.nodes.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SmartScriptParserTest {
-	//@Disabled
 	@Test
 	public void testPrimjer1() {
 		String docBody = readExample(1);
@@ -88,7 +90,7 @@ public class SmartScriptParserTest {
 			}
 			DocumentNode document = parser.getDocumentNode();
 			System.out.println(((TextNode)document.getChild(0)).getText());
-			System.out.println(((EchoNode)document.getChild(1)));
+			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
 			TextNode tekst = new TextNode("Ovo je OK ");
@@ -116,7 +118,7 @@ public class SmartScriptParserTest {
 			}
 			DocumentNode document = parser.getDocumentNode();
 			System.out.println(((TextNode)document.getChild(0)).getText());
-			System.out.println(((EchoNode)document.getChild(1)));
+			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
 			TextNode tekst = new TextNode("Ovo je OK ");
@@ -144,7 +146,7 @@ public class SmartScriptParserTest {
 			}
 			DocumentNode document = parser.getDocumentNode();
 			System.out.println(((TextNode)document.getChild(0)).getText());
-			System.out.println(((EchoNode)document.getChild(1)));
+			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
 			TextNode tekst = new TextNode("Ovo je OK ");
@@ -171,7 +173,7 @@ public class SmartScriptParserTest {
 			}
 			DocumentNode document = parser.getDocumentNode();
 			System.out.println(((TextNode)document.getChild(0)).getText());
-			System.out.println(((EchoNode)document.getChild(1)));
+			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
 			TextNode tekst = new TextNode("Ovo je OK ");
@@ -197,10 +199,6 @@ public class SmartScriptParserTest {
 			System.exit(-1);
 			}
 			DocumentNode document = parser.getDocumentNode();
-			//System.out.println(((TextNode)document.getChild(0)).getText());
-			//System.out.println(((ForLoopNode)document.getChild(1)));
-			//System.out.println(((TextNode)document.getChild(2)).getText());
-			//System.out.println(((ForLoopNode)document.getChild(3)));
 			assertEquals(4, document.numberOfChildren());
 			TextNode tekstNode1 = new TextNode("This is sample text.\n");
 			
@@ -254,8 +252,7 @@ public class SmartScriptParserTest {
 		  try(InputStream is = this.getClass().getClassLoader().getResourceAsStream("extra/primjer"+n+".txt")) {
 		    if(is==null) throw new RuntimeException("Datoteka extra/primjer"+n+".txt je nedostupna.");
 		    byte[] data = is.readAllBytes();
-		    String text = new String(data, StandardCharsets.UTF_8);
-		    return text;
+              return new String(data, StandardCharsets.UTF_8);
 		  } catch(IOException ex) {
 		    throw new RuntimeException("Greška pri čitanju datoteke.", ex);
 		  }

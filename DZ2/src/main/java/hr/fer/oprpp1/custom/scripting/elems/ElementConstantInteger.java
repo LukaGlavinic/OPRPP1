@@ -2,7 +2,7 @@ package hr.fer.oprpp1.custom.scripting.elems;
 
 public class ElementConstantInteger extends Element{
 
-	private int value;
+	private final int value;
 	
 	public ElementConstantInteger(int value) {
 		super();
@@ -15,13 +15,11 @@ public class ElementConstantInteger extends Element{
 	
 	@Override
 	public boolean equals(Object obj) {
-		//TO DO
 		if (this == obj) {
             return true;
         }
-		if (obj instanceof ElementConstantInteger) {
-			ElementConstantInteger el = (ElementConstantInteger)obj;
-        	
+		if (obj instanceof ElementConstantInteger el) {
+
             return value == el.value;
         }
         return false;

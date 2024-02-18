@@ -1,22 +1,14 @@
 package hr.fer.oprpp1.custom.scripting.lexer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import hr.fer.oprpp1.custom.scripting.elems.*;
+import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParserException;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParserException;
-import hr.fer.oprpp1.custom.scripting.elems.ElementConstantDouble;
-import hr.fer.oprpp1.custom.scripting.elems.ElementConstantInteger;
-import hr.fer.oprpp1.custom.scripting.elems.ElementFunction;
-import hr.fer.oprpp1.custom.scripting.elems.ElementOperator;
-import hr.fer.oprpp1.custom.scripting.elems.ElementString;
-import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LexerForParserTest {
 
@@ -57,7 +49,7 @@ public class LexerForParserTest {
 		// will obtain EOF
 		lexer.nextToken();
 		// will throw!
-		assertThrows(SmartScriptParserException.class, () -> lexer.nextToken());
+		assertThrows(SmartScriptParserException.class, lexer::nextToken);
 	}
 	
 	@Test
@@ -75,13 +67,11 @@ public class LexerForParserTest {
 		LexerForParser lexer = new LexerForParser(readExample(8));
 		LexToken actual = lexer.nextToken();
 		// will obtain EOF
-		//lexer.nextToken(false);
 		// will throw!
 		LexToken expected = new LexToken(LexTokenType.TEKST, new ElementString(readExample(8), false));
 		assertEquals(expected.getType(), actual.getType());
 		lexer.nextToken();
-		//assertEquals(expected.getValue().asText(), actual.getValue().asText());
-		assertThrows(SmartScriptParserException.class, () -> lexer.nextToken());
+		assertThrows(SmartScriptParserException.class, lexer::nextToken);
 	}
 	
 	@Test
@@ -118,7 +108,6 @@ public class LexerForParserTest {
 		assertEquals(expected5.getValue().asText(), actual5.getValue().asText());
 		
 	}
-	//@Disabled
 	@Test
 	public void testIzPrimjeraIzZadace() {
 		LexerForParser lexer = 
@@ -312,19 +301,13 @@ public class LexerForParserTest {
 		LexToken expected28 = new LexToken(LexTokenType.EOF, null);
 		
 		assertEquals(expected28.getType(), actual29.getType());
-		
-		//assertEquals(expected28.getValue().asText(), actual29.getValue().asText());
-		
-		
-		
 	}
 	
 	private String readExample(int n) {
 		  try(InputStream is = this.getClass().getClassLoader().getResourceAsStream("extra/primjer"+n+".txt")) {
 		    if(is==null) throw new RuntimeException("Datoteka extra/primjer"+n+".txt je nedostupna.");
 		    byte[] data = is.readAllBytes();
-		    String text = new String(data, StandardCharsets.UTF_8);
-		    return text;
+              return new String(data, StandardCharsets.UTF_8);
 		  } catch(IOException ex) {
 		    throw new RuntimeException("Greška pri čitanju datoteke.", ex);
 		  }

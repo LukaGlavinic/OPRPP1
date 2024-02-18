@@ -3,11 +3,6 @@ package hr.fer.oprpp1.hw02;
 import hr.fer.oprpp1.custom.scripting.nodes.DocumentNode;
 import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParser;
 import hr.fer.oprpp1.custom.scripting.parser.SmartScriptParserException;
-import java.nio.file.Files;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 
 
 public class SmartScriptTester {

@@ -1,7 +1,7 @@
 package hr.fer.oprpp1.custom.collections;
 
 /**
- * suÄelje koje definira metode za rad kolekcije
+ * suèelje koje definira metode za rad kolekcije
  * @author Luka
  *
  */

@@ -5,54 +5,51 @@ import java.util.NoSuchElementException;
 
 public class ArrayIndexedCollection implements List {
 	/**
-	 * Kolekcija ostvarena pomoæu polja
+	 * Kolekcija ostvarena pomoÄ‡u polja
 	 */
 	private int size;
 	private Object[] elements;
 	private long modificationCount;
 	/**
-	 * nadjaèana metoda iz suèelja Collection za stvaranje posebne inaèice ElementsGettea za pristup èlanovima polja
+	 * nadjaÄana metoda iz suÄelja Collection za stvaranje posebne inaÄice ElementsGettea za pristup Älanovima polja
 	 */
 	@Override
 	public ArrayElementsGetter createElementsGetter() {
-		
-		ArrayIndexedCollection.ArrayElementsGetter elementsGetter = new ArrayIndexedCollection.ArrayElementsGetter(this);
-		return elementsGetter;
+
+        return new ArrayElementsGetter(this);
 	}
 	/**
-	 * klasa koja slui kao ElementsGetter za objekt tipa ArrayIndexedCollection
+	 * klasa koja sluÅ¾i kao ElementsGetter za objekt tipa ArrayIndexedCollection
 	 * @author Luka
 	 *
 	 */
-private static class ArrayElementsGetter implements ElementsGetter{
+public static class ArrayElementsGetter implements ElementsGetter{
 	
-		private int duljinaPolja, brojIsporucenih;
-		private ArrayIndexedCollection a;
-		private long savedModificationCount;
+		private final int duljinaPolja;
+        private int brojIsporucenih;
+		private final ArrayIndexedCollection a;
+		private final long savedModificationCount;
 		/**
 		 * konstruktor za stvaranje ArrayElementsGettera za ArrayIndexedCollection kojeg se predaje u konstruktor
 		 * @param arr predano u konstruktor
 		 */
 		public ArrayElementsGetter(ArrayIndexedCollection arr) {
-			this.a = arr;
-			this.duljinaPolja = arr.size;
-			this.brojIsporucenih = 0;
-			this.savedModificationCount = arr.modificationCount;
+			a = arr;
+			duljinaPolja = arr.size;
+			brojIsporucenih = 0;
+			savedModificationCount = arr.modificationCount;
 		}
 		/**
-		 * metoda vraæa true ako postoji sljedeæi element polja
+		 * metoda vraÄ‡a true ako postoji sljedeÄ‡i element polja
 		 */
 		public boolean hasNextElement() {
-			if(brojIsporucenih == duljinaPolja) {
-				return false;
-			}
-			return true;
-		}
+            return brojIsporucenih != duljinaPolja;
+        }
 		/**
-		 * metoda vraæa objekt iz trenutnog èlana polja
+		 * metoda vraÄ‡a objekt iz trenutnog Älana polja
 		 */
 		public Object getNextElement() {
-			if(this.savedModificationCount != a.modificationCount) {
+			if(savedModificationCount != a.modificationCount) {
 				throw new ConcurrentModificationException("Bilo je strukturnih izmjena nad poljem!");
 			}else {
 				if(brojIsporucenih == duljinaPolja || a.elements[brojIsporucenih] == null) {
@@ -66,23 +63,23 @@ private static class ArrayElementsGetter implements ElementsGetter{
 	}
 	
 	/**
-	 * Ovo je inicijalni konstruktor koji stvara polje velièine 16
+	 * Ovo je inicijalni konstruktor koji stvara polje veliÄ‡ine 16
 	 */
 	public ArrayIndexedCollection () {
 		this(16);
 	}
 	/**
-	 * Ovo je konstruktor za poèetnu velièinu
-	 * @param initialCapacity: poèetna velièina polja
+	 * Ovo je konstruktor za poÄetnu veliÄinu
+	 * @param initialCapacity: poÄetna veliÄina polja
 	 */
 	public ArrayIndexedCollection (int initialCapacity) {
 		super();
 		if(initialCapacity < 1) {
 			throw new IllegalArgumentException("Zadan premali poÄetni kapacitet!");
 		}else {
-			this.size = 0;
-			this.elements = new Object[initialCapacity];
-			this.modificationCount = 0;
+			size = 0;
+			elements = new Object[initialCapacity];
+			modificationCount = 0;
 		}
 	}
 	/**
@@ -93,9 +90,9 @@ private static class ArrayElementsGetter implements ElementsGetter{
 		this(other, other.size());
 	}
 	/**
-	 * Konstruktor koji stvara polje zadane velièine i puni ga elementima zadane kolekcije
+	 * Konstruktor koji stvara polje zadane veliÄ‡ine i puni ga elementima zadane kolekcije
 	 * @param other: kolekcija koja se kopira u stvoreno polje
-	 * @param initialCapacity: poèetna velièina polja
+	 * @param initialCapacity: poÄetna veliÄ‡ina polja
 	 */
 	public ArrayIndexedCollection (Collection other, int initialCapacity) {
 		super();
@@ -104,8 +101,8 @@ private static class ArrayElementsGetter implements ElementsGetter{
 		}if(initialCapacity < other.size()) {
 			initialCapacity = other.size();
 		}
-		this.elements = new Object[initialCapacity];
-		this.modificationCount = 0;
+		elements = new Object[initialCapacity];
+		modificationCount = 0;
 		this.addAll(other);
 	}
 	/**
@@ -115,142 +112,137 @@ private static class ArrayElementsGetter implements ElementsGetter{
 	public void add(Object value) {
 		if(value == null) {
 			throw new NullPointerException("Predani objekt je null!");
-		}else if(this.size == this.elements.length){
-			Object[] pom = this.elements;
-			this.elements = new Object[this.size * 2];
-			for(int i = 0; i < this.size; i++) {
-				this.elements[i] = pom[i];
-			}
-			this.modificationCount++;
-			this.size++;
-			this.elements[this.size - 1] = value;
-			pom = null;
-		}else {
-			this.modificationCount++;
-			this.elements[size] = value;
-			this.size++;
+		}else if(size == elements.length){
+			Object[] pom = elements;
+			elements = new Object[size * 2];
+            System.arraycopy(pom, 0, elements, 0, size);
+			modificationCount++;
+			size++;
+			elements[size - 1] = value;
+        }else {
+			modificationCount++;
+			elements[size] = value;
+			size++;
 		}
 	}
 	/**
-	 * Metoda vraæa element polja na zadanom mjestu
+	 * Metoda vraÄ‡a element polja na zadanom mjestu
 	 * @param index: mjesto s kojeg bi se element htio dobiti
 	 * @return element sa zadanog mjesta
 	 */
 	public Object get(int index) {
-		if(index < 0 || index > this.size - 1) {
+		if(index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Index je veÄ‡i od broja elemenata polja!");
 		}else {
-			return this.elements[index];
+			return elements[index];
 		}
 	}
 	/**
-	 * metoda briše kolekciju
+	 * metoda briÅ¡e kolekciju
 	 */
 	@Override
 	public void clear() {
-		for(int i = 0; i < this.size; i++) {
-			this.elements[i] = null;
+		for(int i = 0; i < size; i++) {
+			elements[i] = null;
 		}
-		this.modificationCount++;
-		this.size = 0;
+		modificationCount++;
+		size = 0;
 	}
 	/**
-	 * metoda umeæe objekt na poziciju u kolekciju
-	 * @param value: objekt koji se umeæe
-	 * @param position: pozicija na koju se objek umeæe
+	 * metoda umeÄ‡e objekt na poziciju u kolekciju
+	 * @param value: objekt koji se umeÄ‡e
+	 * @param position: pozicija na koju se objek umeÄ‡e
 	 */
 	public void insert(Object value, int position) {
-		if(position < 0 || position > this.size) {
+		if(position < 0 || position > size) {
 			throw new IndexOutOfBoundsException("Ubacuje se na krivu poziciju!");
-		}else if(this.size == this.elements.length) {
-			int j = this.size;
+		}else if(size == elements.length) {
+			int j = size;
 			this.add(value);
 			for(; j > position; j--) {
-				this.elements[j] = this.elements[j-1];
+				elements[j] = elements[j-1];
 			}
-			this.elements[position] = value;
+			elements[position] = value;
 		}else {
-			for(int i = this.size; i > position; i--) {
-				this.elements[i] = this.elements[i - 1];
+			for(int i = size; i > position; i--) {
+				elements[i] = elements[i - 1];
 			}
-			this.elements[position] = value;
-			this.size++;
-			this.modificationCount++;
+			elements[position] = value;
+			size++;
+			modificationCount++;
 		}
 	}
 	/**
-	 * metoda vraæa indeks prvog nağenog zadanog objekta u polju, -1 ako ga ne nağe
-	 * @param value: traeni objekt
+	 * metoda vraÄ‡a indeks prvog naÄ‘enog zadanog objekta u polju, -1 ako ga ne naÄ‘e
+	 * @param value: traÅ¾eni objekt
 	 * @return pozicija prvog pronalaska
 	 */
 	public int indexOf(Object value) {
-		for(int i = 0; i < this.size; i++) {
-			if(this.elements[i].equals(value)) {
+		for(int i = 0; i < size; i++) {
+			if(elements[i].equals(value)) {
 				return i;
 			}
 		}
 		return -1;
 	}
 	/**
-	 * metoda briše objekt na zadanoj poziciji ili baca iznimku
+	 * metoda briÅ¡e objekt na zadanoj poziciji ili baca iznimku
 	 * @param index: indeks brisanja
 	 */
 	public void remove(int index) {
-		if(index < 0 || index > this.size - 1) {
+		if(index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Krivi index!");
 		}else {
-			for(int i = index; i < this.size - 1; i++) {
-				this.elements[i] = this.elements[i+1];
+			for(int i = index; i < size - 1; i++) {
+				elements[i] = elements[i+1];
 			}
-			this.elements[this.size - 1] = null;
-			this.size--;
-			this.modificationCount++;
+			elements[size - 1] = null;
+			size--;
+			modificationCount++;
 		}
 	}
 	/**
-	 * metoda vraæa broj elemenata kolekcije
+	 * metoda vraÄ‡a broj elemenata kolekcije
 	 */
 	@Override
 	public int size() {
-		return this.size;
+		return size;
 	}
 	/**
 	 * metoda provjerava da li je kolekcija prazna
 	 */
 	@Override
 	public boolean isEmpty() {
-		return this.size == 0 ? true : false;
+		return size == 0;
 	}
 	/**
-	 * metoda provjerava da li kolekcija sadri zadani objekt
+	 * metoda provjerava da li kolekcija sadrÅ¾i zadani objekt
 	 */
 	@Override
 	public boolean contains(Object value) {
-		for(int i = 0; i < this.size; i++) {
-			if(this.elements[i].equals(value)) {
+		for(int i = 0; i < size; i++) {
+			if(elements[i].equals(value)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	/**
-	 * metoda vraæa polje objekata iz kolekcije
+	 * metoda vraÄ‡a polje objekata iz kolekcije
 	 */
 	@Override
 	public Object[] toArray() {
-		Object[] newArray = new Object[this.size];
-		for(int i = 0; i < this.size; i++) {
-			newArray[i] = this.elements[i];
-		}
+		Object[] newArray = new Object[size];
+        System.arraycopy(elements, 0, newArray, 0, size);
 		return newArray;
 	}
 	/**
-	 * metoda briše zadani objekt iz kolekcije
+	 * metoda briÅ¡e zadani objekt iz kolekcije
 	 */
 	@Override
 	public boolean remove(Object value) {
-		for(int i = 0; i < this.size; i++) {
-			if(this.elements[i].equals(value)) {
+		for(int i = 0; i < size; i++) {
+			if(elements[i].equals(value)) {
 				this.remove(i);
 				return true;
 			}

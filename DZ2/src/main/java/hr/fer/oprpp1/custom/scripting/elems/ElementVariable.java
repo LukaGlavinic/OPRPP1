@@ -2,7 +2,7 @@ package hr.fer.oprpp1.custom.scripting.elems;
 
 public class ElementVariable extends Element{
 
-	private String name;
+	private final String name;
 	
 	public ElementVariable(String name) {
 		super();
@@ -11,6 +11,6 @@ public class ElementVariable extends Element{
 	
 	@Override
 	public String asText() {
-		return this.name;
+		return name;
 	}
 }

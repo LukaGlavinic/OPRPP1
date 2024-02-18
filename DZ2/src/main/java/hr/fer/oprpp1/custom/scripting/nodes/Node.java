@@ -6,11 +6,8 @@ public class Node {
 	
 	private ArrayIndexedCollection poljeDjece;
 	
-	//private boolean inicijaliziranoPoljeDjece;
-	
 	public Node() {
 		super();
-		//this.inicijaliziranoPoljeDjece = false;
 	}
 
 	public void addChildNode(Node child) {
@@ -30,14 +27,10 @@ public class Node {
 	
 	@Override
     public String toString() {
-       String document = "";
+       StringBuilder document = new StringBuilder();
        for(int i = 0; i < this.numberOfChildren(); i++) {
-           document += this.getChild(i).toString();
+           document.append(this.getChild(i).toString());
        }
-       return document;
+       return document.toString();
     }
-    
-    /*public String ispisiDjete() {
-        
-    }*/
 }
