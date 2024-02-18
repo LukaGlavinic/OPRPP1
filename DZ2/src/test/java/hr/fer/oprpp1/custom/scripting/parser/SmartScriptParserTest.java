@@ -1,6 +1,9 @@
 package hr.fer.oprpp1.custom.scripting.parser;
 
-import hr.fer.oprpp1.custom.scripting.elems.*;
+import hr.fer.oprpp1.custom.scripting.elems.Element;
+import hr.fer.oprpp1.custom.scripting.elems.ElementConstantInteger;
+import hr.fer.oprpp1.custom.scripting.elems.ElementString;
+import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
 import hr.fer.oprpp1.custom.scripting.nodes.DocumentNode;
 import hr.fer.oprpp1.custom.scripting.nodes.EchoNode;
 import hr.fer.oprpp1.custom.scripting.nodes.ForLoopNode;
@@ -34,7 +37,6 @@ public class SmartScriptParserTest {
 			
 			assertEquals(tekst, document.getChild(0));
 	}
-	//@Disabled
 	@Test
 	public void testPrimjer2() {
 		String docBody = readExample(2);
@@ -76,7 +78,7 @@ public class SmartScriptParserTest {
 	}
 	@Disabled
 	@Test
-	public void testPrimjer6() {
+	public void testPrimjer4() {
 		String docBody = readExample(6);
 		SmartScriptParser parser = null;
 		try {
@@ -93,8 +95,6 @@ public class SmartScriptParserTest {
 			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
-			TextNode tekst = new TextNode("Ovo je OK ");
-			
 
 			ElementString string = new ElementString("String ide\nu više redaka\nčak tri", true);
 			Element[] elementi = new Element[]{string};
@@ -104,7 +104,7 @@ public class SmartScriptParserTest {
 	}
 	@Disabled
 	@Test
-	public void testPrimjer7() {
+	public void testPrimjer5() {
 		String docBody = readExample(7);
 		SmartScriptParser parser = null;
 		try {
@@ -121,7 +121,6 @@ public class SmartScriptParserTest {
 			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
-			TextNode tekst = new TextNode("Ovo je OK ");
 			
 			ElementString string = new ElementString("String ide\nu \"više\" \nredaka\novdje a stvarno četiri", true);
 			Element[] elementi = new Element[]{string};
@@ -132,7 +131,7 @@ public class SmartScriptParserTest {
 	
 	@Disabled
 	@Test
-	public void testPrimjer8() {
+	public void testPrimjer6() {
 		String docBody = readExample(8);
 		SmartScriptParser parser = null;
 		try {
@@ -149,7 +148,6 @@ public class SmartScriptParserTest {
 			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
-			TextNode tekst = new TextNode("Ovo je OK ");
 			
 			ElementString string = new ElementString("String ide\nu \"više\" \nredaka\novdje a stvarno četiri", true);
 			Element[] elementi = new Element[]{string};
@@ -159,7 +157,7 @@ public class SmartScriptParserTest {
 	}
 	@Disabled
 	@Test
-	public void testPrimjer9() {
+	public void testPrimjer7() {
 		String docBody = readExample(9);
 		SmartScriptParser parser = null;
 		try {
@@ -176,7 +174,6 @@ public class SmartScriptParserTest {
 			System.out.println(document.getChild(1));
 			System.out.println(((TextNode)document.getChild(2)).getText());
 			assertEquals(3, document.numberOfChildren());
-			TextNode tekst = new TextNode("Ovo je OK ");
 			
 			ElementString string = new ElementString("String ide\nu \"više\" \nredaka\novdje a stvarno četiri", true);
 			Element[] elementi = new Element[]{string};
@@ -210,37 +207,11 @@ public class SmartScriptParserTest {
 			
 			TextNode tekst2 = new TextNode("\nThis is ");
 			
-			ElementVariable var2 = new ElementVariable("i");
-			Element[] elementi = new Element[]{var2};
-			EchoNode echo = new EchoNode(elementi);
-			
-			TextNode tekst3 = new TextNode("-th time this message is generated.\n");
-			TextNode tekst4 = new TextNode("\n");
-			
 			ElementVariable var3 = new ElementVariable("i");
 			ElementConstantInteger i4 = new ElementConstantInteger(0);
 			ElementConstantInteger i5 = new ElementConstantInteger(10);
 			ElementConstantInteger i6 = new ElementConstantInteger(2);
 			ForLoopNode forLoopNode2 = new ForLoopNode(var3, i4, i5, i6);
-			
-			TextNode tekst5 = new TextNode("\nsin(");
-			
-			ElementVariable var4 = new ElementVariable("i");
-			Element[] elementi2 = new Element[]{var4};
-			EchoNode echo2 = new EchoNode(elementi2);
-			
-			TextNode tekst6 = new TextNode("^2) = ");
-			
-			ElementVariable var5 = new ElementVariable("i");
-			ElementVariable var6 = new ElementVariable("i");
-			ElementOperator oper = new ElementOperator("*");
-			ElementFunction funk = new ElementFunction("@sin");
-			ElementString stringUnut = new ElementString("0.000", true);
-			ElementFunction funk2 = new ElementFunction("@decfmt");
-			Element[] elementi3 = new Element[]{var5, var6, oper, funk, stringUnut, funk2};
-			EchoNode echo3 = new EchoNode(elementi3);
-			
-			TextNode tekst7 = new TextNode("\n");
 			
 			assertEquals(tekstNode1, document.getChild(0));
 			assertEquals(forLoopNode1, document.getChild(1));

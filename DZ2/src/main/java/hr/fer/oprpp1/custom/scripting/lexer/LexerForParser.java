@@ -192,37 +192,9 @@ public class LexerForParser {
 						}
 						if(data[currentIndex] == '.') {
 							broj.append(data[currentIndex]);
-							while(Character.isDigit(data[currentIndex])) {
-								broj.append(data[currentIndex]);
-								currentIndex++;
-							}
-							double brojD = Double.parseDouble(broj.toString());
-							while(data[currentIndex] == ' ') {//otkloni razmake
-								currentIndex++;
-							}
-							if(data[currentIndex] == '$' 
-									&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
-								currentIndex += 2;
-								token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-								uTagu = false;
-							}else {
-								token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-								uTagu = true;
-							}
+							numberTokenGenerator(broj);
 						}
-						int brojI = Integer.parseInt(broj.toString());
-						while(data[currentIndex] == ' ') {//otkloni razmake
-							currentIndex++;
-						}
-						if(data[currentIndex] == '$' 
-								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
-							currentIndex += 2;
-							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							uTagu = false;
-						}else {
-							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							uTagu = true;
-						}
+						numberTokenGenerator(broj);
 					}else {
 						String operator = Character.toString(data[currentIndex]);
 						currentIndex++;
@@ -316,37 +288,9 @@ public class LexerForParser {
 					if(data[currentIndex] == '.') {
 						broj.append(data[currentIndex]);
 						currentIndex++;
-						while(Character.isDigit(data[currentIndex])) {
-							broj.append(data[currentIndex]);
-							currentIndex++;
-						}
-						double brojD = Double.parseDouble(broj.toString());
-						while(data[currentIndex] == ' ') {//otkloni razmake
-							currentIndex++;
-						}
-						if(data[currentIndex] == '$' 
-								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
-							currentIndex += 2;
-							token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-							uTagu = false;
-						}else {
-							token = new LexToken(LexTokenType.NUMBER, new ElementConstantDouble(brojD));
-							uTagu = true;
-						}
+						numberTokenGenerator(broj);
 					}else {
-						int brojI = Integer.parseInt(broj.toString());
-						while(data[currentIndex] == ' ') {//otkloni razmake
-							currentIndex++;
-						}
-						if(data[currentIndex] == '$' 
-								&& currentIndex + 1 < data.length && data[currentIndex + 1] == '}') {
-							currentIndex += 2;
-							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							uTagu = false;
-						}else {
-							token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
-							uTagu = true;
-						}
+						numberTokenGenerator(broj);
 					}
 				}else{
 					throw new SmartScriptParserException("KRIVO DEFINIRAN TAG!");
@@ -354,7 +298,23 @@ public class LexerForParser {
 			}
 		return token;
 	}
-	
+
+	private void numberTokenGenerator(StringBuilder broj) {
+		int brojI = Integer.parseInt(broj.toString());
+		while(data[currentIndex] == ' ') {//otkloni razmake
+			currentIndex++;
+		}
+		if(data[currentIndex] == '$'
+				&& currentIndex + 1 < data.length
+				&& data[currentIndex + 1] == '}') {
+			currentIndex += 2;
+			uTagu = false;
+		}else {
+			uTagu = true;
+		}
+		token = new LexToken(LexTokenType.NUMBER, new ElementConstantInteger(brojI));
+	}
+
 	public boolean isuTagu() {
 		return !uTagu;
 	}
