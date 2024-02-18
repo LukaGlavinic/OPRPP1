@@ -7,39 +7,39 @@ public class ObjectStack{
 	 * konstruktor za stvaranje stoga objekata
 	 */
 	public ObjectStack() {
-		this.unutarnjePolje = new ArrayIndexedCollection();
+		unutarnjePolje = new ArrayIndexedCollection();
 	}
 	/**
 	 * metoda vraća da li je stog prazan
 	 * @return istina ako je prazan
 	 */
 	public boolean isEmpty() {
-		return this.unutarnjePolje.isEmpty();
+		return unutarnjePolje.isEmpty();
 	}
 	/**
 	 * metoda vraća broj elemenata stoga
 	 * @return broj elemenata stoga
 	 */
 	public int size() {
-		return this.unutarnjePolje.size();
+		return unutarnjePolje.size();
 	}
 	/**
 	 * stavlja objekt na stog
 	 * @param value: dodani objekt
 	 */
 	public void push(Object value) {
-		this.unutarnjePolje.add(value);
+		unutarnjePolje.add(value);
 	}
 	/**
 	 * skida objekt sa stoga
 	 * @return skinuti objekt
 	 */
 	public Object pop() {
-		if(this.size() == 0) {
+		if(size() == 0) {
 			throw new EmptyStackException("Stog je prazan!");
 		}else {
-			Object zadnji = this.unutarnjePolje.get(unutarnjePolje.size() - 1);
-			this.unutarnjePolje.remove(this.unutarnjePolje.size() - 1);
+			Object zadnji = unutarnjePolje.get(unutarnjePolje.size() - 1);
+			unutarnjePolje.remove(unutarnjePolje.size() - 1);
 			return zadnji;
 		}
 	}
@@ -48,16 +48,16 @@ public class ObjectStack{
 	 * @return objekt na vrhu stoga
 	 */
 	public Object peek() {
-		if(this.size() == 0) {
+		if(size() == 0) {
 			throw new EmptyStackException("Stog je prazan!");
 		}else {
-			return this.unutarnjePolje.get(this.unutarnjePolje.size() - 1);
+			return unutarnjePolje.get(unutarnjePolje.size() - 1);
 		}
 	}
 	/**
 	 * briše stog
 	 */
 	public void clear() {
-		this.unutarnjePolje.clear();
+		unutarnjePolje.clear();
 	}
 }

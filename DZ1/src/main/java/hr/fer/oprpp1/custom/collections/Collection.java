@@ -10,7 +10,7 @@ public class Collection {
 	 * @return istina ako je prazna
 	 */
 	public boolean isEmpty() {
-		return this.size() == 0;
+		return size() == 0;
     }
 	/**
 	 * metoda vraća broj elemenata kolekcije

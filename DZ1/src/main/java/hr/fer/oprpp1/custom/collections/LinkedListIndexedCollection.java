@@ -20,8 +20,8 @@ public class LinkedListIndexedCollection extends Collection{
 	 */
 	public LinkedListIndexedCollection() {
 		super();
-		this.size = 0;
-		this.first = this.last = null;
+		size = 0;
+		first = last = null;
 	}
 	/**
 	 * konstruktor koji stvara listu s elementima iz kolekcije other
@@ -32,9 +32,9 @@ public class LinkedListIndexedCollection extends Collection{
 		if(other == null) {
 			throw new NullPointerException("Zadana kolekcija je null!");
 		}
-		this.size = 0;
-		this.first = this.last = null;
-		this.addAll(other);
+		size = 0;
+		first = last = null;
+		addAll(other);
 	}
 	/**
 	 * metoda dodaje objekt u listu
@@ -45,16 +45,16 @@ public class LinkedListIndexedCollection extends Collection{
 		}else {
 			ListNode noviZadnji = new ListNode();
 			noviZadnji.value = value;
-			if(this.first == null) {
-				this.first = this.last = noviZadnji;
+			if(first == null) {
+				first = last = noviZadnji;
 				noviZadnji.next = noviZadnji.previous = null;
 			}else{
-				noviZadnji.previous = this.last;
+				noviZadnji.previous = last;
 				noviZadnji.next = null;
-				this.last.next = noviZadnji;
-				this.last = noviZadnji;
+				last.next = noviZadnji;
+				last = noviZadnji;
 			}
-			this.size++;
+			size++;
 		}
 	}
 	/**
@@ -63,20 +63,20 @@ public class LinkedListIndexedCollection extends Collection{
 	 * @return objekt na poziciji
 	 */
 	public Object get(int index) {
-		if(index < 0 || index > this.size - 1) {
+		if(index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Krivi index!");
 		}else {
 			Object povratna = null;
-			if(index >= this.size / 2) {
-				ListNode trenutni = this.last;
-				for(int i = this.size - 1; i > this.size / 2 - 1; i--, trenutni = trenutni.previous) {
+			if(index >= size / 2) {
+				ListNode trenutni = last;
+				for(int i = size - 1; i > size / 2 - 1; i--, trenutni = trenutni.previous) {
 					if(i == index) {
 						povratna = trenutni.value;
 					}
 				}
 			}else {
-				ListNode trenutni = this.first;
-				for(int i = 0; i < this.size / 2; i++, trenutni = trenutni.next) {
+				ListNode trenutni = first;
+				for(int i = 0; i < size / 2; i++, trenutni = trenutni.next) {
 					if(i == index) {
 						povratna = trenutni.value;
 					}
@@ -89,8 +89,8 @@ public class LinkedListIndexedCollection extends Collection{
 	 * metoda briše listu
 	 */
 	public void clear() {
-		this.first = this.last = null;
-		this.size = 0;
+		first = last = null;
+		size = 0;
 	}
 	/**
 	 * metoda umeće objekt na zadanu poziciju, baca iznimku ako je pozicija kriva
@@ -98,22 +98,22 @@ public class LinkedListIndexedCollection extends Collection{
 	 * @param position: pozicija umetanja
 	 */
 	public void insert(Object value, int position) {
-		if(position < 0 || position > this.size) {
+		if(position < 0 || position > size) {
 			throw new IndexOutOfBoundsException("Kriva pozicija ubacivanja!");
 		}else {
-			if(position == this.size) {
-				this.add(value);
+			if(position == size) {
+				add(value);
 			}else {
 				ListNode ubacaj = new ListNode();
 				ubacaj.value = value;
 				if(position == 0) {
 					ubacaj.previous = null;
-					ubacaj.next = this.first;
-					this.first.previous = ubacaj;
-					this.first = ubacaj;
+					ubacaj.next = first;
+					first.previous = ubacaj;
+					first = ubacaj;
 				}else {
-					ListNode trenutni = this.first.next;
-					for(int i = 1; i < this.size; i++, trenutni = trenutni.next) {
+					ListNode trenutni = first.next;
+					for(int i = 1; i < size; i++, trenutni = trenutni.next) {
 						if(i == position) {
 							ubacaj.previous = trenutni.previous;
 							ubacaj.next = trenutni;
@@ -122,7 +122,7 @@ public class LinkedListIndexedCollection extends Collection{
 						}
 					}
 				}
-				this.size++;
+				size++;
 			}
 		}
 	}
@@ -132,8 +132,8 @@ public class LinkedListIndexedCollection extends Collection{
 	 * @return pozicija objekta
 	 */
 	public int indexOf(Object value) {
-		ListNode trenutni = this.first;
-		for(int i = 0; i < this.size; i++, trenutni = trenutni.next) {
+		ListNode trenutni = first;
+		for(int i = 0; i < size; i++, trenutni = trenutni.next) {
 			if(trenutni.value.equals(value)) {
 				return i;
 			}
@@ -145,21 +145,21 @@ public class LinkedListIndexedCollection extends Collection{
 	 * @param index: pozicija brisanja
 	 */
 	public void remove(int index) {
-		if(index < 0 || index > this.size - 1) {
+		if(index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Krivi index izbacivanja!");
 		}else {
-			ListNode trenutni = this.first;
+			ListNode trenutni = first;
 			if(index == 0) {
-				if(this.size == 1) {
-					this.first = this.last = null;
+				if(size == 1) {
+					first = last = null;
 				}else {
-					this.first = trenutni.next;
+					first = trenutni.next;
 					trenutni.next.previous = null;
 				}
-			}else if(index == this.size - 1) {
-				trenutni = this.last;
+			}else if(index == size - 1) {
+				trenutni = last;
 				trenutni.previous.next = null;
-				this.last = trenutni.previous;
+				last = trenutni.previous;
 			}else {
 				for(int i = 0; i <= index && trenutni != null; i++, trenutni = trenutni.next) {
 					if(i == index) {
@@ -172,7 +172,7 @@ public class LinkedListIndexedCollection extends Collection{
             assert trenutni != null;
             trenutni.value = null;
 			trenutni.next = trenutni.previous = null;
-            this.size--;
+            size--;
 		}
 	}
 	/**
@@ -180,21 +180,21 @@ public class LinkedListIndexedCollection extends Collection{
 	 */
 	@Override
 	public boolean isEmpty() {
-		return this.size == 0;
+		return size == 0;
 	}
 	/**
 	 * metoda vraća broj elemenata liste
 	 */
 	@Override
 	public int size() {
-		return this.size;
+		return size;
 	}
 	/**
 	 * metoda govori da li lista sadrži dani objekt
 	 */
 	@Override
 	public boolean contains(Object value) {
-		for(ListNode trenutni = this.first; trenutni != null; trenutni = trenutni.next) {
+		for(ListNode trenutni = first; trenutni != null; trenutni = trenutni.next) {
 			if(trenutni.value.equals(value)) {
 				return true;
 			}
@@ -209,15 +209,15 @@ public class LinkedListIndexedCollection extends Collection{
 		if(value == null) {
 			throw new NullPointerException("Predani objekt je null!");
 		}else {
-			for(ListNode trenutni = this.first; trenutni != null; trenutni = trenutni.next) {
+			for(ListNode trenutni = first; trenutni != null; trenutni = trenutni.next) {
 				if(trenutni.value.equals(value)) {
 					if(trenutni.previous == null && trenutni.next == null) {
-						this.first = this.last = null;
+						first = last = null;
 					}else if(trenutni.previous == null) {
-						this.first = trenutni.next;
+						first = trenutni.next;
 						trenutni.next.previous = null;
 					}else if(trenutni.next == null) {
-						this.last = trenutni.previous;
+						last = trenutni.previous;
 						trenutni.previous.next = null;
 					}else {
 						trenutni.previous.next = trenutni.next;
@@ -225,7 +225,7 @@ public class LinkedListIndexedCollection extends Collection{
 					}
 					trenutni.value = null;
 					trenutni.next = trenutni.previous = null;
-                    this.size--;
+                    size--;
 					return true;
 				}
 			}
@@ -237,9 +237,9 @@ public class LinkedListIndexedCollection extends Collection{
 	 */
 	@Override
 	public Object[] toArray() {
-		Object[] array = new Object[this.size];
-		ListNode trenutni = this.first;
-		for(int i = 0; i < this.size; trenutni = trenutni.next, i++) {
+		Object[] array = new Object[size];
+		ListNode trenutni = first;
+		for(int i = 0; i < size; trenutni = trenutni.next, i++) {
 			array[i] = trenutni.value;
 		}
 		return array;
@@ -249,7 +249,7 @@ public class LinkedListIndexedCollection extends Collection{
 	 */
 	@Override
 	public void forEach(Processor processor) {
-		ListNode trenutni = this.first;
+		ListNode trenutni = first;
 		while(trenutni != null) {
 			processor.process(trenutni.value);
 			trenutni = trenutni.next;

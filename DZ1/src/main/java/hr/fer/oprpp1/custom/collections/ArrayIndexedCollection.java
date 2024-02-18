@@ -22,8 +22,8 @@ public class ArrayIndexedCollection extends Collection {
 		if(initialCapacity < 1) {
 			throw new IllegalArgumentException("Zadan premali početni kapacitet!");
 		}else {
-			this.size = 0;
-			this.elements = new Object[initialCapacity];
+			size = 0;
+			elements = new Object[initialCapacity];
 		}
 	}
 	/**
@@ -45,8 +45,8 @@ public class ArrayIndexedCollection extends Collection {
 		}if(initialCapacity < other.size()) {
 			initialCapacity = other.size();
 		}
-		this.elements = new Object[initialCapacity];
-		this.addAll(other);
+		elements = new Object[initialCapacity];
+		addAll(other);
 	}
 	/**
 	 * Metoda dodaje objekt na kraj polja, ako je premalo mjesta, stvara novo polje dvostrukog kapaciteta
@@ -55,15 +55,15 @@ public class ArrayIndexedCollection extends Collection {
 	public void add(Object value) {
 		if(value == null) {
 			throw new NullPointerException("Predani objekt je null!");
-		}else if(this.size == this.elements.length){
-			Object[] pom = this.elements;
-			this.elements = new Object[this.size * 2];
-            System.arraycopy(pom, 0, this.elements, 0, this.size);
-			this.size++;
-			this.elements[this.size - 1] = value;
+		}else if(size == elements.length){
+			Object[] pom = elements;
+			elements = new Object[size * 2];
+            System.arraycopy(pom, 0, elements, 0, size);
+			size++;
+			elements[size - 1] = value;
         }else {
-			this.elements[size] = value;
-			this.size++;
+			elements[size] = value;
+			size++;
 		}
 	}
 	/**
@@ -72,10 +72,10 @@ public class ArrayIndexedCollection extends Collection {
 	 * @return element sa zadanog mjesta
 	 */
 	public Object get(int index) {
-		if(index < 0 || index > this.size - 1) {
+		if(index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Index je veći od broja elemenata polja!");
 		}else {
-			return this.elements[index];
+			return elements[index];
 		}
 	}
 	/**
@@ -83,10 +83,10 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public void clear() {
-		for(int i = 0; i < this.size; i++) {
-			this.elements[i] = null;
+		for(int i = 0; i < size; i++) {
+			elements[i] = null;
 		}
-		this.size = 0;
+		size = 0;
 	}
 	/**
 	 * metoda umeće objekt na poziciju u kolekciju
@@ -94,20 +94,20 @@ public class ArrayIndexedCollection extends Collection {
 	 * @param position: pozicija na koju se objek umeće
 	 */
 	public void insert(Object value, int position) {
-		if(position < 0 || position > this.size) {
+		if(position < 0 || position > size) {
 			throw new IndexOutOfBoundsException("Ubacuje se na krivu poziciju!");
-		}else if(this.size == this.elements.length) {
-			this.add(value);
-			for(int j = this.size - 1; j > position; j--) {
-				this.elements[j] = this.elements[j-1];
+		}else if(size == elements.length) {
+			add(value);
+			for(int j = size - 1; j > position; j--) {
+				elements[j] = elements[j-1];
 			}
-			this.elements[position] = value;
+			elements[position] = value;
 		}else {
-			for(int i = this.size; i > position; i--) {
-				this.elements[i] = this.elements[i - 1];
+			for(int i = size; i > position; i--) {
+				elements[i] = elements[i - 1];
 			}
-			this.elements[position] = value;
-			this.size++;
+			elements[position] = value;
+			size++;
 		}
 	}
 	/**
@@ -116,8 +116,8 @@ public class ArrayIndexedCollection extends Collection {
 	 * @return pozicija prvog pronalaska
 	 */
 	public int indexOf(Object value) {
-		for(int i = 0; i < this.size; i++) {
-			if(this.elements[i].equals(value)) {
+		for(int i = 0; i < size; i++) {
+			if(elements[i].equals(value)) {
 				return i;
 			}
 		}
@@ -128,14 +128,14 @@ public class ArrayIndexedCollection extends Collection {
 	 * @param index: indeks brisanja
 	 */
 	public void remove(int index) {
-		if(index < 0 || index > this.size - 1) {
+		if(index < 0 || index > size - 1) {
 			throw new IndexOutOfBoundsException("Krivi index!");
 		}else {
-			for(int i = index; i < this.size - 1; i++) {
-				this.elements[i] = this.elements[i+1];
+			for(int i = index; i < size - 1; i++) {
+				elements[i] = elements[i+1];
 			}
-			this.elements[this.size - 1] = null;
-			this.size--;
+			elements[size - 1] = null;
+			size--;
 		}
 	}
 	/**
@@ -143,22 +143,22 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public int size() {
-		return this.size;
+		return size;
 	}
 	/**
 	 * metoda provjerava da li je kolekcija prazna
 	 */
 	@Override
 	public boolean isEmpty() {
-		return this.size == 0;
+		return size == 0;
 	}
 	/**
 	 * metoda provjerava da li kolekcija sadrži zadani objekt
 	 */
 	@Override
 	public boolean contains(Object value) {
-		for(int i = 0; i < this.size; i++) {
-			if(this.elements[i].equals(value)) {
+		for(int i = 0; i < size; i++) {
+			if(elements[i].equals(value)) {
 				return true;
 			}
 		}
@@ -169,8 +169,8 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public Object[] toArray() {
-		Object[] newArray = new Object[this.size];
-        System.arraycopy(this.elements, 0, newArray, 0, this.size);
+		Object[] newArray = new Object[size];
+        System.arraycopy(elements, 0, newArray, 0, size);
 		return newArray;
 	}
 	/**
@@ -178,9 +178,9 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public boolean remove(Object value) {
-		for(int i = 0; i < this.size; i++) {
-			if(this.elements[i].equals(value)) {
-				this.remove(i);
+		for(int i = 0; i < size; i++) {
+			if(elements[i].equals(value)) {
+				remove(i);
 				return true;
 			}
 		}
@@ -191,8 +191,8 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public void forEach(Processor processor) {
-		for(int i = 0; i < this.size; i++) {
-			processor.process(this.get(i));
+		for(int i = 0; i < size; i++) {
+			processor.process(get(i));
 		}
 	}
 }
