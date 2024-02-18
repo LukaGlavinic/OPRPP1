@@ -169,10 +169,10 @@ public class LinkedListIndexedCollection extends Collection{
 					}
 				}
 			}
-			trenutni.value = null;
+            assert trenutni != null;
+            trenutni.value = null;
 			trenutni.next = trenutni.previous = null;
-			trenutni = null;
-			this.size--;
+            this.size--;
 		}
 	}
 	/**
@@ -180,7 +180,7 @@ public class LinkedListIndexedCollection extends Collection{
 	 */
 	@Override
 	public boolean isEmpty() {
-		return this.size == 0 ? true : false;
+		return this.size == 0;
 	}
 	/**
 	 * metoda vraća broj elemenata liste
@@ -225,8 +225,7 @@ public class LinkedListIndexedCollection extends Collection{
 					}
 					trenutni.value = null;
 					trenutni.next = trenutni.previous = null;
-					trenutni = null;
-					this.size--;
+                    this.size--;
 					return true;
 				}
 			}

@@ -1,21 +1,22 @@
 package hr.fer.oprpp1.custom.collections;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayIndexedCollectionTest {
 	@Test
 	public void osnovniKonstruktor() {
 		ArrayIndexedCollection a = new ArrayIndexedCollection();
 		assertEquals(0, a.size());
-		assertTrue(a != null);
+        assertNotNull(a);
 	}
 	
 	@Test
 	public void konstruktorSInicijalnimKapacitetom() {
 		ArrayIndexedCollection a = new ArrayIndexedCollection(7);
 		assertEquals(0, a.size());
-		assertTrue(a != null);
+        assertNotNull(a);
 	}
 	
 	@Test
@@ -23,7 +24,7 @@ public class ArrayIndexedCollectionTest {
 		Collection c = new Collection();
 		ArrayIndexedCollection a = new ArrayIndexedCollection(c);
 		assertEquals(0, a.size());
-		assertTrue(a != null);
+        assertNotNull(a);
 	}
 	
 	@Test
@@ -31,14 +32,14 @@ public class ArrayIndexedCollectionTest {
 		Collection c = new Collection();
 		ArrayIndexedCollection a = new ArrayIndexedCollection(c, 7);
 		assertEquals(0, a.size());
-		assertTrue(a != null);
+        assertNotNull(a);
 	}
 	
 	@Test
 	public void addSNull() {
 		ArrayIndexedCollection a = new ArrayIndexedCollection();
 		assertThrows(NullPointerException.class, 
-				() -> {a.add(null);});
+				() -> a.add(null));
 	}
 	
 	@Test
@@ -65,7 +66,7 @@ public class ArrayIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.get(-1);});
+				() -> a.get(-1));
 	}
 	
 	@Test
@@ -74,7 +75,7 @@ public class ArrayIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.get(2);});
+				() -> a.get(2));
 	}
 	
 	@Test
@@ -94,12 +95,12 @@ public class ArrayIndexedCollectionTest {
 		assertEquals(0, a.size());
 		Object[] actual = a.toArray();
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.get(1);});
+				() -> a.get(1));
 		int i = 0;
-		for(; i <= actual.length;) {
-			i++;
-		}
-		assertEquals(1, i);
+        while (i <= actual.length) {
+            i++;
+        }
+        assertEquals(1, i);
 	}
 	
 	@Test
@@ -108,7 +109,7 @@ public class ArrayIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.insert("Đuro", 3);});
+				() -> a.insert("Đuro", 3));
 	}
 	
 	@Test
@@ -117,7 +118,7 @@ public class ArrayIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.insert("Đuro", -1);});
+				() -> a.insert("Đuro", -1));
 	}
 	
 	@Test
@@ -168,7 +169,7 @@ public class ArrayIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Pero");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.remove(2);;});
+				() -> a.remove(2));
 	}
 	
 	@Test

@@ -2,7 +2,7 @@ package hr.fer.oprpp1.custom.collections;
 
 public class ObjectStack{
 	
-	private ArrayIndexedCollection unutarnjePolje;
+	private final ArrayIndexedCollection unutarnjePolje;
 	/**
 	 * konstruktor za stvaranje stoga objekata
 	 */

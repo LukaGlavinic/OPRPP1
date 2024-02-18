@@ -1,14 +1,15 @@
 package hr.fer.oprpp1.custom.collections;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LinkedListIndexedCollectionTest {
 	@Test
 	public void osnovniKonstruktor() {
 		LinkedListIndexedCollection a = new LinkedListIndexedCollection();
 		assertEquals(0, a.size());
-		assertTrue(a != null);
+        assertNotNull(a);
 	}
 	
 	@Test
@@ -16,14 +17,14 @@ public class LinkedListIndexedCollectionTest {
 		Collection c = new Collection();
 		LinkedListIndexedCollection a = new LinkedListIndexedCollection(c);
 		assertEquals(0, a.size());
-		assertTrue(a != null);
+        assertNotNull(a);
 	}
 	
 	@Test
 	public void addSNull() {
 		LinkedListIndexedCollection a = new LinkedListIndexedCollection();
 		assertThrows(NullPointerException.class, 
-				() -> {a.add(null);});
+				() -> a.add(null));
 	}
 	
 	@Test
@@ -39,7 +40,7 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.get(-1);});
+				() -> a.get(-1));
 	}
 	
 	@Test
@@ -48,7 +49,7 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.get(2);});
+				() -> a.get(2));
 	}
 	
 	@Test
@@ -68,12 +69,12 @@ public class LinkedListIndexedCollectionTest {
 		assertEquals(0, a.size());
 		Object[] actual = a.toArray();
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.get(1);});
+				() -> a.get(1));
 		int i = 0;
-		for(; i <= actual.length;) {
-			i++;
-		}
-		assertEquals(1, i);
+        while (i <= actual.length) {
+            i++;
+        }
+        assertEquals(1, i);
 	}
 	
 	@Test
@@ -82,7 +83,7 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.insert("Đuro", 3);});
+				() -> a.insert("Đuro", 3));
 	}
 	
 	@Test
@@ -91,7 +92,7 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Joso");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.insert("Đuro", -1);});
+				() -> a.insert("Đuro", -1));
 	}
 	
 	@Test
@@ -127,7 +128,7 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Pero");
 		assertThrows(IndexOutOfBoundsException.class, 
-				() -> {a.remove(2);;});
+				() -> a.remove(2));
 	}
 	
 	@Test
@@ -145,9 +146,9 @@ public class LinkedListIndexedCollectionTest {
 	@Test
 	public void isEmtyTest() {
 		LinkedListIndexedCollection a = new LinkedListIndexedCollection();
-		assertEquals(true, a.isEmpty());
+        assertTrue(a.isEmpty());
 		a.add("Marko");
-		assertEquals(false, a.isEmpty());
+        assertFalse(a.isEmpty());
 	}
 	
 	@Test
@@ -162,8 +163,8 @@ public class LinkedListIndexedCollectionTest {
 	public void containsTest() {
 		LinkedListIndexedCollection a = new LinkedListIndexedCollection();
 		a.add("Marko");
-		assertEquals(true, a.contains("Marko"));
-		assertEquals(false, a.contains("Ana"));
+        assertTrue(a.contains("Marko"));
+        assertFalse(a.contains("Ana"));
 	}
 	
 	@Test
@@ -172,7 +173,7 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Ana");
 		assertEquals(2, a.size());
-		assertEquals(true, a.remove("Marko"));
+        assertTrue(a.remove("Marko"));
 		assertEquals(1, a.size());
 	}
 	
@@ -182,6 +183,6 @@ public class LinkedListIndexedCollectionTest {
 		a.add("Marko");
 		a.add("Ana");
 		assertThrows(NullPointerException.class, 
-				() -> {a.remove(null);;});
+				() -> a.remove(null));
 	}
 }

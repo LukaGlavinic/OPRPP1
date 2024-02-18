@@ -58,13 +58,10 @@ public class ArrayIndexedCollection extends Collection {
 		}else if(this.size == this.elements.length){
 			Object[] pom = this.elements;
 			this.elements = new Object[this.size * 2];
-			for(int i = 0; i < this.size; i++) {
-				this.elements[i] = pom[i];
-			}
+            System.arraycopy(pom, 0, this.elements, 0, this.size);
 			this.size++;
 			this.elements[this.size - 1] = value;
-			pom = null;
-		}else {
+        }else {
 			this.elements[size] = value;
 			this.size++;
 		}
@@ -153,7 +150,7 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return this.size == 0 ? true : false;
+		return this.size == 0;
 	}
 	/**
 	 * metoda provjerava da li kolekcija sadrži zadani objekt
@@ -173,9 +170,7 @@ public class ArrayIndexedCollection extends Collection {
 	@Override
 	public Object[] toArray() {
 		Object[] newArray = new Object[this.size];
-		for(int i = 0; i < this.size; i++) {
-			newArray[i] = this.elements[i];
-		}
+        System.arraycopy(this.elements, 0, newArray, 0, this.size);
 		return newArray;
 	}
 	/**
