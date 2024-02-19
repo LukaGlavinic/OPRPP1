@@ -2,10 +2,10 @@ package hr.fer.oprpp1.hw04.db;
 
 public class StudentRecord {
 
-	private String jmbag;
-	private String firstName;
-	private String lastName;
-	private int grade;
+	private final String jmbag;
+	private final String firstName;
+	private final String lastName;
+	private final int grade;
 	
 	public StudentRecord(String jmbag, String lastName, String firstName, int grade) {
 		super();
@@ -41,8 +41,7 @@ public class StudentRecord {
 		if (this == obj) {
             return true;
         }
-        if (obj instanceof StudentRecord) {
-        	StudentRecord el = (StudentRecord)obj;
+        if (obj instanceof StudentRecord el) {
             return jmbag.equals(el.jmbag);
         }
         return false;

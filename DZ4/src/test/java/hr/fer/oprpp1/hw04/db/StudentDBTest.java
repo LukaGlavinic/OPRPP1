@@ -1,6 +1,5 @@
 package hr.fer.oprpp1.hw04.db;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -8,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StudentDBTest {
 	@Test
@@ -49,7 +51,7 @@ public class StudentDBTest {
 			assertEquals("0123456789", qp1.getQueriedJMBAG());
 			assertEquals(1, qp1.getQuery().size());
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -66,7 +68,7 @@ public class StudentDBTest {
 		try {
 			assertTrue(filter.accepts(r));
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 }

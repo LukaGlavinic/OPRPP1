@@ -3,15 +3,15 @@ package hr.fer.oprpp1.hw04.db;
 
 public class ConditionalExpression {
 
-	private IFieldValueGetter fieldGetter;
-	private String stringLiteral;
-	private IComparisonOperator comparisonOperator;
+	private final IFieldValueGetter fieldGetter;
+	private final String stringLiteral;
+	private final IComparisonOperator comparisonOperator;
 	
 	public ConditionalExpression(IFieldValueGetter varijabla, String literal, IComparisonOperator operator) {
 		super();
-		this.fieldGetter = varijabla;
-		this.stringLiteral = literal;
-		this.comparisonOperator = operator;
+		fieldGetter = varijabla;
+		stringLiteral = literal;
+		comparisonOperator = operator;
 		
 	}
 

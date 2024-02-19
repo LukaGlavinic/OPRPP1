@@ -6,12 +6,12 @@ import java.util.List;
 
 public class StudentDatabase {
 	
-	private List<StudentRecord> listaStudenata;
-	private HashMap<String, StudentRecord> mapaStudenata;
+	private final List<StudentRecord> listaStudenata;
+	private final HashMap<String, StudentRecord> mapaStudenata;
 	
 	public StudentDatabase(List<String> listaStudenataString) throws Exception {
-		this.listaStudenata = new ArrayList<>();
-		this.mapaStudenata = new HashMap<>();
+		listaStudenata = new ArrayList<>();
+		mapaStudenata = new HashMap<>();
 		for(String s : listaStudenataString) {
 			String[] poljeAtributa = s.split("	");
 			String jmbag = poljeAtributa[0];

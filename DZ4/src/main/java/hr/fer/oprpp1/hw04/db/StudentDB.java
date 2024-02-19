@@ -20,10 +20,10 @@ public class StudentDB {
 			String komanda = sc.nextLine();
 			String[] poljeShowElemenata = null;
 			sc.close();
-			if(komanda.substring(0, 4).equals("exit")) {
+			if(komanda.startsWith("exit")) {
 				System.out.println("Goodbye!");
 				System.exit(0);
-			}else if(komanda.substring(0, 5).equals("query")) {
+			}else if(komanda.startsWith("query")) {
 				komanda = komanda.substring(5);
 				komanda = komanda.trim();
 				if(komanda.contains("showing")) {
@@ -60,107 +60,99 @@ public class StudentDB {
 						najDPrez = re.getLastName().length();
 					}
 				}
-				if(!showing) {
-					String pocetnaCrta = "+============+=";
-					for(int i = 0; i <= najDPrez; i++) {
-						pocetnaCrta += "=";
-					}
-					pocetnaCrta += "+=";
-					for(int i = 0; i <= najDIme; i++) {
-						pocetnaCrta += "=";
-					}
-					pocetnaCrta += "+===+";
+                StringBuilder pocetnaCrta;
+                if(!showing) {
+                    pocetnaCrta = new StringBuilder("+============+=");
+                    pocetnaCrta.append("=".repeat(Math.max(0, najDPrez + 1)));
+					pocetnaCrta.append("+=");
+                    pocetnaCrta.append("=".repeat(Math.max(0, najDIme + 1)));
+					pocetnaCrta.append("+===+");
 					System.out.println(pocetnaCrta);
-					String redak;
+					StringBuilder redak;
 					for(StudentRecord re : l) {
-						redak = "| " + re.getJmbag() + " | " + re.getLastName();
-						for(int j = 0; j < najDPrez - re.getLastName().length(); j++) {
-							redak += " ";
-						}
-						redak += " | " + re.getFirstName();
-						for(int j = 0; j < najDIme - re.getFirstName().length(); j++) {
-							redak += " ";
-						}
-						redak += " | " + re.getGrade() + " |";
+						redak = new StringBuilder("| " + re.getJmbag() + " | " + re.getLastName());
+                        redak.append(" ".repeat(Math.max(0, najDPrez - re.getLastName().length())));
+						redak.append(" | ").append(re.getFirstName());
+                        redak.append(" ".repeat(Math.max(0, najDIme - re.getFirstName().length())));
+						redak.append(" | ").append(re.getGrade()).append(" |");
 						System.out.println(redak);
 					}
-					System.out.println(pocetnaCrta);
-				}else {//ispis u slucaju rijeci showing
-					String pocetnaCrta = "+=";
+                }else {//ispis u slucaju rijeci showing
+                    pocetnaCrta = new StringBuilder("+=");
 					int brojElem = poljeShowElemenata.length;
 					for(int j = 0; j < brojElem; j++) {
 						String elementPrik = poljeShowElemenata[j];
-						if(elementPrik.equals("grade")) {
-							pocetnaCrta += "==+";
-							if(j < brojElem - 1) {
-								pocetnaCrta += "=";
-							}
-						}else if(elementPrik.equals("firstName")) {
-							for(int i = 0; i < najDIme; i++) {
-								pocetnaCrta += "=";
-							}
-							pocetnaCrta += "=+";
-							if(j < brojElem - 1) {
-								pocetnaCrta += "=";
-							}
-						}else if(elementPrik.equals("lastName")) {
-							for(int i = 0; i < najDPrez; i++) {
-								pocetnaCrta += "=";
-							}
-							pocetnaCrta += "=+";
-							if(j < brojElem - 1) {
-								pocetnaCrta += "=";
-							}
-						}else if(elementPrik.equals("jmbag")) {
-							for(int i = 0; i < 10; i++) {
-								pocetnaCrta += "=";
-							}
-							pocetnaCrta += "=+";
-							if(j < brojElem - 1) {
-								pocetnaCrta += "=";
-							}
-						}
+                        switch (elementPrik) {
+                            case "grade" -> {
+                                pocetnaCrta.append("==+");
+                                if (j < brojElem - 1) {
+                                    pocetnaCrta.append("=");
+                                }
+                            }
+                            case "firstName" -> {
+                                pocetnaCrta.append("=".repeat(najDIme));
+                                pocetnaCrta.append("=+");
+                                if (j < brojElem - 1) {
+                                    pocetnaCrta.append("=");
+                                }
+                            }
+                            case "lastName" -> {
+                                pocetnaCrta.append("=".repeat(najDPrez));
+                                pocetnaCrta.append("=+");
+                                if (j < brojElem - 1) {
+                                    pocetnaCrta.append("=");
+                                }
+                            }
+                            case "jmbag" -> {
+                                pocetnaCrta.append("=".repeat(10));
+                                pocetnaCrta.append("=+");
+                                if (j < brojElem - 1) {
+                                    pocetnaCrta.append("=");
+                                }
+                            }
+                        }
 					}
 					System.out.println(pocetnaCrta);
-					String redak;
+					StringBuilder redak;
 					for(StudentRecord re : l) {
-						redak = "| ";
+						redak = new StringBuilder("| ");
 						for(int j = 0; j < brojElem; j++) {
-							if(poljeShowElemenata[j].equals("jmbag")) {
-								redak += re.getJmbag() + " |";
-								if(j < brojElem - 1) {
-									redak += " ";
-								}
-							}else if(poljeShowElemenata[j].equals("grade")) {
-								redak += re.getGrade() + " |";
-								if(j < brojElem - 1) {
-									redak += " ";
-								}
-							}else if(poljeShowElemenata[j].equals("firstName")) {
-								redak += re.getFirstName();
-								for(int d = 0; d < najDIme - re.getFirstName().length(); d++) {
-									redak += " ";
-								}
-								redak += " |";
-								if(j < brojElem - 1) {
-									redak += " ";
-								}
-							}else if(poljeShowElemenata[j].equals("lastName")) {
-								redak += re.getLastName();
-								for(int d = 0; d < najDPrez - re.getLastName().length(); d++) {
-									redak += " ";
-								}
-								redak += " |";
-								if(j < brojElem - 1) {
-									redak += " ";
-								}
-							}
+                            switch (poljeShowElemenata[j]) {
+                                case "jmbag" -> {
+                                    redak.append(re.getJmbag()).append(" |");
+                                    if (j < brojElem - 1) {
+                                        redak.append(" ");
+                                    }
+                                }
+                                case "grade" -> {
+                                    redak.append(re.getGrade()).append(" |");
+                                    if (j < brojElem - 1) {
+                                        redak.append(" ");
+                                    }
+                                }
+                                case "firstName" -> {
+                                    redak.append(re.getFirstName());
+                                    redak.append(" ".repeat(Math.max(0, najDIme - re.getFirstName().length())));
+                                    redak.append(" |");
+                                    if (j < brojElem - 1) {
+                                        redak.append(" ");
+                                    }
+                                }
+                                case "lastName" -> {
+                                    redak.append(re.getLastName());
+                                    redak.append(" ".repeat(Math.max(0, najDPrez - re.getLastName().length())));
+                                    redak.append(" |");
+                                    if (j < brojElem - 1) {
+                                        redak.append(" ");
+                                    }
+                                }
+                            }
 						}
 						System.out.println(redak);
 					}
-					System.out.println(pocetnaCrta);
-				}
-			}
+                }
+                System.out.println(pocetnaCrta);
+            }
 			System.out.println("Records selected: " + velicinaListe);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

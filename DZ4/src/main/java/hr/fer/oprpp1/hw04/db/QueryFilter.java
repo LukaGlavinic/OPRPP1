@@ -7,7 +7,7 @@ public class QueryFilter implements IFilter{
 	List<ConditionalExpression> listaUpita;
 
 	public QueryFilter(List<ConditionalExpression> upiti) {
-		this.listaUpita = upiti;
+		listaUpita = upiti;
 	}
 
 	@Override

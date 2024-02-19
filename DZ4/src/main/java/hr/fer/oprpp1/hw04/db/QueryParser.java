@@ -7,16 +7,16 @@ public class QueryParser {
 	
 	private boolean direktan;
 	private int trenutniIndex;
-	private List<ConditionalExpression> listaUpita;
+	private final List<ConditionalExpression> listaUpita;
 
 	public QueryParser(String upit) throws Exception {
-		this.direktan = false;
-		this.trenutniIndex = 0;
-		this.listaUpita = new ArrayList<>();
+		direktan = false;
+		trenutniIndex = 0;
+		listaUpita = new ArrayList<>();
 		char[] poljeZnUpita = upit.toCharArray();
 		ConditionalExpression prviUpit = nextExpression(poljeZnUpita);
 		while(prviUpit != null) {
-			this.listaUpita.add(prviUpit);
+			listaUpita.add(prviUpit);
 			prviUpit = nextExpression(poljeZnUpita);
 		}
 	}
@@ -47,7 +47,7 @@ public class QueryParser {
 		}
 		IFieldValueGetter varijabla;
 		IComparisonOperator operator = null;
-		String literal;
+		StringBuilder literal;
 		if(polje[trenutniIndex] == 'f' && polje[trenutniIndex+1] == 'i' && polje[trenutniIndex+2] == 'r' && polje[trenutniIndex+3] == 's' &&
 				polje[trenutniIndex+4] == 't' && polje[trenutniIndex+5] == 'N' && polje[trenutniIndex+6] == 'a' && polje[trenutniIndex+7] == 'm' && polje[trenutniIndex+8] == 'e') {
 			varijabla = FieldValueGetters.FIRST_NAME;
@@ -71,15 +71,13 @@ public class QueryParser {
 			trenutniIndex++;
 		}else if(polje[trenutniIndex] == '<') {
 			if(polje[trenutniIndex+1] == '=') {
-				operator = ComparisonOperators.LESS_OR_EQUALS;
-				trenutniIndex += 2;
+                trenutniIndex += 2;
 			}
 			operator = ComparisonOperators.LESS;
 			trenutniIndex++;
 		}else if(polje[trenutniIndex] == '>') {
 			if(polje[trenutniIndex+1] == '=') {
-				operator = ComparisonOperators.GREATER_OR_EQUALS;
-				trenutniIndex += 2;
+                trenutniIndex += 2;
 			}
 			operator = ComparisonOperators.GREATER;
 			trenutniIndex++;
@@ -94,10 +92,10 @@ public class QueryParser {
 			trenutniIndex++;
 		}
 		if(polje[trenutniIndex] == '"') {
-			literal = "";
+			literal = new StringBuilder();
 			trenutniIndex++;
 			while(polje[trenutniIndex] != '"') {
-				literal += Character.toString(polje[trenutniIndex]);
+				literal.append(polje[trenutniIndex]);
 				trenutniIndex++;
 			}
 			trenutniIndex++;
@@ -107,7 +105,7 @@ public class QueryParser {
 		while(trenutniIndex < polje.length && (polje[trenutniIndex] == ' ' || polje[trenutniIndex] == '\t')) {//otkloni razmake i tabove
 			trenutniIndex++;
 		}
-		ConditionalExpression izraz = new ConditionalExpression(varijabla, literal, operator);
+		ConditionalExpression izraz = new ConditionalExpression(varijabla, literal.toString(), operator);
 		if(trenutniIndex < polje.length && trenutniIndex+3 < polje.length && Character.toLowerCase(polje[trenutniIndex]) == 'a' && Character.toLowerCase(polje[trenutniIndex+1]) == 'n' && Character.toLowerCase(polje[trenutniIndex+2]) == 'd') {
 			trenutniIndex += 3;
 		}
