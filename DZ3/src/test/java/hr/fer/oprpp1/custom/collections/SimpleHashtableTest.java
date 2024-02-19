@@ -73,7 +73,7 @@ public class SimpleHashtableTest {
 	public void isEmptyTest() {
 		SimpleHashtable<String, Integer> mapa = new SimpleHashtable<>(2);
 		assertEquals(0, mapa.size());
-		assertEquals(true, mapa.isEmpty());
+        assertTrue(mapa.isEmpty());
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class SimpleHashtableTest {
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
 		assertEquals(3, mapa.size());
-		assertEquals(false, mapa.isEmpty());
+        assertFalse(mapa.isEmpty());
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ public class SimpleHashtableTest {
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
 		assertEquals(3, mapa.size());
-		assertEquals(false, mapa.containsKey("Luka"));
+        assertFalse(mapa.containsKey("Luka"));
 	}
 	
 	@Test
@@ -103,7 +103,7 @@ public class SimpleHashtableTest {
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
 		assertEquals(3, mapa.size());
-		assertEquals(true, mapa.containsKey("Marko"));
+        assertTrue(mapa.containsKey("Marko"));
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class SimpleHashtableTest {
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
 		assertEquals(3, mapa.size());
-		assertEquals(false, mapa.containsValue(6));
+        assertFalse(mapa.containsValue(6));
 	}
 	
 	@Test
@@ -123,7 +123,7 @@ public class SimpleHashtableTest {
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
 		assertEquals(3, mapa.size());
-		assertEquals(true, mapa.containsValue(3));
+        assertTrue(mapa.containsValue(3));
 	}
 	
 	@Test
@@ -147,7 +147,7 @@ public class SimpleHashtableTest {
 		mapa.put("Marko", 5);
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
-		assertEquals(null, mapa.get(null));
+        assertNull(mapa.get(null));
 	}
 	
 	@Test
@@ -176,6 +176,6 @@ public class SimpleHashtableTest {
 		mapa.put("Marko", 5);
 		mapa.put("Ivica", 3);
 		mapa.put("Josip", 2);
-		assertEquals(null, mapa.remove(null));
+        assertNull(mapa.remove(null));
 	}
 }

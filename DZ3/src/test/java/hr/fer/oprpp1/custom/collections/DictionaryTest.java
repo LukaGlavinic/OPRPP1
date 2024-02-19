@@ -10,7 +10,7 @@ public class DictionaryTest {
 		Object povratna;
 		Dictionary<Integer, String> rijecnik = new Dictionary<>();
 		povratna = rijecnik.put(1, "Franjo");
-		assertEquals(null, povratna);
+        assertNull(povratna);
 		povratna = rijecnik.put(1, "Marko");
 		assertEquals("Franjo", povratna);
 		assertEquals("Marko", rijecnik.get(1));
@@ -21,11 +21,11 @@ public class DictionaryTest {
 		Object povratna;
 		Dictionary<Integer, String> rijecnik = new Dictionary<>();
 		povratna = rijecnik.put(1, "Franjo");
-		assertEquals(null, povratna);
+        assertNull(povratna);
 		povratna = rijecnik.put(1, "Marko");
 		assertEquals("Franjo", povratna);
 		assertEquals("Marko", rijecnik.get(1));
-		assertEquals(null, rijecnik.get(2));
+        assertNull(rijecnik.get(2));
 	}
 	
 	@Test
@@ -33,12 +33,12 @@ public class DictionaryTest {
 		Object povratna;
 		Dictionary<Integer, String> rijecnik = new Dictionary<>();
 		povratna = rijecnik.put(1, "Franjo");
-		assertEquals(null, povratna);
+        assertNull(povratna);
 		povratna = rijecnik.put(1, "Marko");
 		assertEquals("Franjo", povratna);
 		assertEquals("Marko", rijecnik.get(1));
-		assertEquals(null, rijecnik.get(2));
+        assertNull(rijecnik.get(2));
 		assertEquals("Marko", rijecnik.remove(1));
-		assertEquals(null, rijecnik.get(1));
+        assertNull(rijecnik.get(1));
 	}
 }
