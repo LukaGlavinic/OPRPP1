@@ -14,21 +14,21 @@ public class CalcModelImpl implements CalcModel{
 	
 	private DoubleBinaryOperator operacija;
 	
-	private List<CalcValueListener> setPromatracaZaObav;
+	private final List<CalcValueListener> setPromatracaZaObav;
 	
 	public List<CalcValueListener> getSetPromatracaZaObav() {
-		return this.setPromatracaZaObav;
+		return setPromatracaZaObav;
 	}
 	
 	public CalcModelImpl() {
-		this.zamrznutaVrijednost = null;
-		this.broj = 0;
-		this.unos = "";
-		this.editabilan = true;
-		this.pozitivan = true;
-		this.aktivanOperand = Double.NaN;
-		this.operacija = null;
-		this.setPromatracaZaObav = new ArrayList<>();
+		zamrznutaVrijednost = null;
+		broj = 0;
+		unos = "";
+		editabilan = true;
+		pozitivan = true;
+		aktivanOperand = Double.NaN;
+		operacija = null;
+		setPromatracaZaObav = new ArrayList<>();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CalcModelImpl implements CalcModel{
 
 	@Override
 	public double getValue() {
-		if(unos.equals("")) {
+		if(unos.isEmpty()) {
 			return 0.0;
 		}
 		return broj;
@@ -111,7 +111,7 @@ public class CalcModelImpl implements CalcModel{
 
 	@Override
 	public void insertDecimalPoint() throws CalculatorInputException {
-		if(!editabilan || unos.contains(".") || unos.equals("")) {
+		if(!editabilan || unos.contains(".") || unos.isEmpty()) {
 			throw new CalculatorInputException("Ne mogu dodati decimalnu toèku!");
 		}
 		unos += ".";
@@ -205,7 +205,7 @@ public class CalcModelImpl implements CalcModel{
 			}else if(unos.equals("NaN")) {
 				s += unos;
 				return s;
-			}else if(unos.equals("")) {
+			}else if(unos.isEmpty()) {
 				if(!pozitivan) {
 					s += "-";
 				}

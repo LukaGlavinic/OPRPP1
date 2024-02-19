@@ -1,36 +1,30 @@
 package hr.fer.zemris.java.gui.calc;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.DoubleBinaryOperator;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
 import hr.fer.zemris.java.gui.calc.model.CalcModelImpl;
 import hr.fer.zemris.java.gui.calc.model.CalculatorInputException;
 import hr.fer.zemris.java.gui.layouts.CalcLayout;
 import hr.fer.zemris.java.gui.layouts.RCPosition;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.DoubleBinaryOperator;
+
 public class Calculator extends JFrame{
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
-	private CalcModelImpl kalkulator;
-	private List<Double> stog;
+	private final CalcModelImpl kalkulator;
+	private final List<Double> stog;
 	private boolean inverzan, unosDrugogOperanda;
 	
 	public Calculator() {
-		this.inverzan = false;
-		this.kalkulator = new CalcModelImpl();
-		this.stog = new LinkedList<>();
+		inverzan = false;
+		kalkulator = new CalcModelImpl();
+		stog = new LinkedList<>();
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocation(20, 50);
 		setSize(650, 350);
@@ -38,42 +32,42 @@ public class Calculator extends JFrame{
 		initGUI();
 	}
 	
-	class Plus implements DoubleBinaryOperator{
+	static class Plus implements DoubleBinaryOperator{
 		@Override
 		public double applyAsDouble(double left, double right) {
 			return left + right;
 		}
 	}
 	
-	class Minus implements DoubleBinaryOperator{
+	static class Minus implements DoubleBinaryOperator{
 		@Override
 		public double applyAsDouble(double left, double right) {
 			return left - right;
 		}
 	}
 	
-	class Puta implements DoubleBinaryOperator{
+	static class Puta implements DoubleBinaryOperator{
 		@Override
 		public double applyAsDouble(double left, double right) {
 			return left * right;
 		}
 	}
 	
-	class Podjeljeno implements DoubleBinaryOperator{
+	static class Podjeljeno implements DoubleBinaryOperator{
 		@Override
 		public double applyAsDouble(double left, double right) {
 			return left / right;
 		}
 	}
 	
-	class XnaN implements DoubleBinaryOperator{
+	static class XnaN implements DoubleBinaryOperator{
 		@Override
 		public double applyAsDouble(double left, double right) {
 			return Math.pow(left, right);
 		}
 	}
 	
-	class Korijen implements DoubleBinaryOperator{
+	static class Korijen implements DoubleBinaryOperator{
 		@Override
 		public double applyAsDouble(double left, double right) {
 			return Math.pow(left, 1 / right);
@@ -115,7 +109,7 @@ public class Calculator extends JFrame{
 						kalkulator.clear();
 						unosDrugogOperanda = false;
 					}
-					kalkulator.insertDigit(Integer.valueOf(b.getText()));
+					kalkulator.insertDigit(Integer.parseInt(b.getText()));
 					labelaKalkulatora.setText(kalkulator.toString());
 				}catch(CalculatorInputException ex) {
 					System.out.println(ex.getMessage());
@@ -264,9 +258,6 @@ public class Calculator extends JFrame{
 		promPredz.addActionListener(e -> {
 			try {
 				kalkulator.swapSign();
-				/*if(!unosDrugogOperanda) {
-					kalkulator.setValue(kalkulator.getValue());
-				}*/
 				labelaKalkulatora.setText(kalkulator.toString());
 			}catch(CalculatorInputException ex) {
 				System.out.println(ex.getMessage());
@@ -373,7 +364,7 @@ public class Calculator extends JFrame{
 		JButton pop = new JButton("pop");
 		pop.addActionListener(e -> {
 			try {
-				if(stog.size() > 0) {
+				if(!stog.isEmpty()) {
 					double saStoga = stog.remove(stog.size() - 1);
 					kalkulator.setValue(saStoga);
 					labelaKalkulatora.setText(kalkulator.toString());
@@ -390,11 +381,7 @@ public class Calculator extends JFrame{
 		Inv.setSelected(false);
 		Inv.addActionListener(e -> {
 			inverzan = !inverzan;
-			if(inverzan) {
-				Inv.setSelected(true);
-			}else {
-				Inv.setSelected(false);
-			}
+            Inv.setSelected(inverzan);
 		});
 		cp.add(Inv, new RCPosition(5,7));
 		
@@ -421,8 +408,6 @@ public class Calculator extends JFrame{
 	}
 	
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(()->{
-			new Calculator().setVisible(true);
-		});
+		SwingUtilities.invokeLater(()-> new Calculator().setVisible(true));
 	}
 }

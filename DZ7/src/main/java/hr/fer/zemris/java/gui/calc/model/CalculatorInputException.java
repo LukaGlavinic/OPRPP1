@@ -1,5 +1,7 @@
 package hr.fer.zemris.java.gui.calc.model;
 
+import java.io.Serial;
+
 /**
  * Iznimka koja signalizira da je korisnik probao napraviti
  * nedozvoljeni unos u kalkulator (primjerice, broj koji se 
@@ -10,6 +12,7 @@ package hr.fer.zemris.java.gui.calc.model;
  */
 public class CalculatorInputException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
