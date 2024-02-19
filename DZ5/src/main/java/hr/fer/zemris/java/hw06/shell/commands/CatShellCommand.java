@@ -1,53 +1,50 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
+import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.ShellCommand;
+import hr.fer.zemris.java.hw06.shell.ShellStatus;
+
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellCommand;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
 public class CatShellCommand implements ShellCommand{
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		arguments = arguments.trim();
-		String setZnakova, putDoDatoteke;
-		putDoDatoteke = setZnakova = "";
+		StringBuilder setZnakova;
+        StringBuilder putDoDatoteke;
+        putDoDatoteke = new StringBuilder(setZnakova = new StringBuilder());
 		char[] poljeZnakova = arguments.toCharArray();
 		int i = 1;
 		if(poljeZnakova[0] == '"') {
 			while(!(poljeZnakova[i] == '"' && poljeZnakova[i - 1] != '\\')) {
 				if(poljeZnakova[i] == '\\' && i + 1 < poljeZnakova.length - 1 && (poljeZnakova[i + 1] == '\\' || poljeZnakova[i + 1] == '"')) {
-					putDoDatoteke += Character.toString(poljeZnakova[i + 1]);
+					putDoDatoteke.append(poljeZnakova[i + 1]);
 					i++;
 				}else {
-					putDoDatoteke += Character.toString(poljeZnakova[i]);
+					putDoDatoteke.append(poljeZnakova[i]);
 				}
 				i++;
 			}
 			i += 2;
 			if(i < poljeZnakova.length) {
-				while(i < poljeZnakova.length) {
-					setZnakova += Character.toString(poljeZnakova[i]);
-				}
+				setZnakova.append(poljeZnakova[i]);
 			}
 		}else {
 			String[] polje = arguments.split("\\s+");
-			putDoDatoteke = polje[0];
+			putDoDatoteke = new StringBuilder(polje[0]);
 			if(polje.length > 1) {
-				setZnakova = polje[1];
+				setZnakova = new StringBuilder(polje[1]);
 			}
 		}
 		Path put;
 		Charset set = Charset.defaultCharset();
 		try {
-			put = Paths.get(putDoDatoteke);
+			put = Paths.get(putDoDatoteke.toString());
 			if(!put.isAbsolute()) {
 				put = put.toAbsolutePath();
 			}
@@ -55,10 +52,10 @@ public class CatShellCommand implements ShellCommand{
 			env.writeln("Nepravilno zadan put do datoteke za naredbu cat");
 			return ShellStatus.CONTINUE;
 		}
-		if(!setZnakova.equals("")) {
+		if(!setZnakova.isEmpty()) {
 			try {
-				if(Charset.isSupported(setZnakova)) {
-					set = Charset.forName(setZnakova);
+				if(Charset.isSupported(setZnakova.toString())) {
+					set = Charset.forName(setZnakova.toString());
 				}
 			}catch(Exception e) {
 				env.writeln("Greška kod imena seta znakova");
@@ -84,12 +81,6 @@ public class CatShellCommand implements ShellCommand{
 
 	@Override
 	public List<String> getCommandDescription() {
-		List<String> lista = new ArrayList<>();
-		lista.add("Uzima 1 ili 2 argumenta");
-		lista.add("Prvi argument je put do neke datoteke i obavezan je");
-		lista.add("Drugi argument je ime seta znakova koji se koristi za prevoðenje okteta u znakove");
-		lista.add("Ako se drugi argument ne navede uzima se pretpostavljeni set znakova platforme");
-		lista.add("Komanda otvara danu datoteku i ispisuje njen sadržaj na konzolu");
-		return Collections.unmodifiableList(lista);
+        return List.of("Uzima 1 ili 2 argumenta", "Prvi argument je put do neke datoteke i obavezan je", "Drugi argument je ime seta znakova koji se koristi za prevoðenje okteta u znakove", "Ako se drugi argument ne navede uzima se pretpostavljeni set znakova platforme", "Komanda otvara danu datoteku i ispisuje njen sadržaj na konzolu");
 	}
 }

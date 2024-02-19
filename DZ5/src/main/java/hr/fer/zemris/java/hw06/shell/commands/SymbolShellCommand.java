@@ -1,12 +1,10 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
+
+import java.util.List;
 
 public class SymbolShellCommand implements ShellCommand{
 
@@ -49,10 +47,6 @@ public class SymbolShellCommand implements ShellCommand{
 
 	@Override
 	public List<String> getCommandDescription() {
-		List<String> lista = new ArrayList<>();
-		lista.add("Ima ili 1 ili 2 argumenta");
-		lista.add("Ispisuje trenutno korišteni znak ili mijenja trenutni znak u predani znak");
-		lista.add("Ako je promjenjen znak ispisuje stari znak i novi znak");
-		return Collections.unmodifiableList(lista);
+        return List.of("Ima ili 1 ili 2 argumenta", "Ispisuje trenutno korišteni znak ili mijenja trenutni znak u predani znak", "Ako je promjenjen znak ispisuje stari znak i novi znak");
 	}
 }

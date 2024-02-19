@@ -1,57 +1,46 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
+import java.io.File;
+import java.util.List;
+import java.util.Objects;
+
 public class TreeShellCommand implements ShellCommand{
 	
 	public static void ispisStabla(Environment env, File direk, int dubina) {
-		String s = "";
-		for(int i = 0; i < dubina; i++) {
-			s += "  ";
-		}
-		s += direk.getName();
+        String s = "  ".repeat(Math.max(0, dubina)) +
+                direk.getName();
 		env.writeln(s);
-		if(direk.listFiles() != null && direk.listFiles().length > 0) {
-			for(File djete : direk.listFiles()) {
-				ispisStabla(env, djete, dubina + 1);
-			}
-		}
+		if(direk.listFiles() != null) {
+            Objects.requireNonNull(direk.listFiles());
+            for (File djete : Objects.requireNonNull(direk.listFiles())) {
+                ispisStabla(env, djete, dubina + 1);
+            }
+        }
 	}
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		arguments = arguments.trim();
-		String  putDoDatoteke = "";
+		StringBuilder putDoDatoteke = new StringBuilder();
 		char[] poljeZnakova = arguments.toCharArray();
 		int i = 1;
 		if(poljeZnakova[0] == '"') {
-			while(!(poljeZnakova[i] == '"' && poljeZnakova[i - 1] != '\\')) {
-				if(poljeZnakova[i] == '\\' && i + 1 < poljeZnakova.length - 1 && (poljeZnakova[i + 1] == '\\' || poljeZnakova[i + 1] == '"')) {
-					putDoDatoteke += Character.toString(poljeZnakova[i + 1]);
-					i++;
-				}else {
-					putDoDatoteke += Character.toString(poljeZnakova[i]);
-				}
-				i++;
-			}
+			getPutDoDatoteke(putDoDatoteke, poljeZnakova, i);
 		}else {
 			String[] polje = arguments.split("\\s+");
 			if(polje.length > 1) {
 				env.writeln("Nepravilan broj argumenata za naredbu tree");
 				return ShellStatus.CONTINUE;
 			}
-			putDoDatoteke = polje[0];
+			putDoDatoteke = new StringBuilder(polje[0]);
 		}
 		File file;
 		try {
-			file = new File(putDoDatoteke);
+			file = new File(putDoDatoteke.toString());
 		}catch(Exception e) {
 			env.writeln("Nepravilno zadan put do datoteke za naredbu tree");
 			return ShellStatus.CONTINUE;
@@ -64,6 +53,18 @@ public class TreeShellCommand implements ShellCommand{
 		return ShellStatus.CONTINUE;
 	}
 
+	static void getPutDoDatoteke(StringBuilder putDoDatoteke, char[] poljeZnakova, int i) {
+		while(!(poljeZnakova[i] == '"' && poljeZnakova[i - 1] != '\\')) {
+			if(poljeZnakova[i] == '\\' && i + 1 < poljeZnakova.length - 1 && (poljeZnakova[i + 1] == '\\' || poljeZnakova[i + 1] == '"')) {
+				putDoDatoteke.append(poljeZnakova[i + 1]);
+				i++;
+			}else {
+				putDoDatoteke.append(poljeZnakova[i]);
+			}
+			i++;
+		}
+	}
+
 	@Override
 	public String getCommandName() {
 		return "tree";
@@ -71,10 +72,6 @@ public class TreeShellCommand implements ShellCommand{
 
 	@Override
 	public List<String> getCommandDescription() {
-		List<String> lista = new ArrayList<>();
-		lista.add("Uzima 1 argument koji je ime direktorija");
-		lista.add("Ispisuje na konzolu stablo tog direktorija");
-		lista.add("Svaka razina stabla pomièe ispis za 2 znaka udesno");
-		return Collections.unmodifiableList(lista);
+        return List.of("Uzima 1 argument koji je ime direktorija", "Ispisuje na konzolu stablo tog direktorija", "Svaka razina stabla pomièe ispis za 2 znaka udesno");
 	}
 }

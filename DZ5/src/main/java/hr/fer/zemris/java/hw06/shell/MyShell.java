@@ -1,24 +1,11 @@
 package hr.fer.zemris.java.hw06.shell;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import hr.fer.zemris.java.hw06.shell.commands.*;
+
+import java.io.*;
 import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import hr.fer.zemris.java.hw06.shell.commands.CatShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.CharsetsShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.CopyShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.ExitShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.HelpShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.HexdumpShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.LsShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.MkdirShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.SymbolShellCommand;
-import hr.fer.zemris.java.hw06.shell.commands.TreeShellCommand;
 
 public class MyShell implements Environment{
 	
@@ -26,35 +13,35 @@ public class MyShell implements Environment{
 	private Character MORELINES;
 	private Character MULTILINE;
 	private ShellStatus status;
-	private SortedMap<String, ShellCommand> commands;
-	private BufferedReader reader;
-	private BufferedWriter writer;
+	private final SortedMap<String, ShellCommand> commands;
+    private BufferedWriter writer;
 	
 	public MyShell() {
-		this.PROMPT = '>';
-		this.MORELINES = '\\';
-		this.MULTILINE = '|';
-		this.status = ShellStatus.CONTINUE;
-		this.commands = new TreeMap<>();
-		this.commands.put("exit", new ExitShellCommand());
-		this.commands.put("symbol", new SymbolShellCommand());
-		this.commands.put("ls", new LsShellCommand());
-		this.commands.put("charsets", new CharsetsShellCommand());
-		this.commands.put("copy", new CopyShellCommand());
-		this.commands.put("mkdir", new MkdirShellCommand());
-		this.commands.put("tree", new TreeShellCommand());
-		this.commands.put("hexdump", new HexdumpShellCommand());
-		this.commands.put("cat", new CatShellCommand());
-		this.commands.put("help", new HelpShellCommand());
+		PROMPT = '>';
+		MORELINES = '\\';
+		MULTILINE = '|';
+		status = ShellStatus.CONTINUE;
+		commands = new TreeMap<>();
+		commands.put("exit", new ExitShellCommand());
+		commands.put("symbol", new SymbolShellCommand());
+		commands.put("ls", new LsShellCommand());
+		commands.put("charsets", new CharsetsShellCommand());
+		commands.put("copy", new CopyShellCommand());
+		commands.put("mkdir", new MkdirShellCommand());
+		commands.put("tree", new TreeShellCommand());
+		commands.put("hexdump", new HexdumpShellCommand());
+		commands.put("cat", new CatShellCommand());
+		commands.put("help", new HelpShellCommand());
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		
 		MyShell ljuska = new MyShell();
 		String linija;
 		String[] poljeLinije;
-		String imeKomande = null, argumenti = "";
-		ShellCommand komanda;
+		String imeKomande = null;
+        StringBuilder argumenti = new StringBuilder();
+        ShellCommand komanda;
 		boolean vise = false;
 		int i;
 		try {
@@ -82,23 +69,23 @@ public class MyShell implements Environment{
 					if(!vise) {
 						vise = true;
 					}else {
-						argumenti += " ";
+						argumenti.append(" ");
 					}
 					for(; i < poljeLinije.length - 1; i++) {
-						argumenti += poljeLinije[i];
+						argumenti.append(poljeLinije[i]);
 						if(i < poljeLinije.length - 2) {
-							argumenti += " ";
+							argumenti.append(" ");
 						}
 					}
 				}else {
 					if(vise) {
-						argumenti += " ";
+						argumenti.append(" ");
 					}
 					vise = false;
 					for(; i < poljeLinije.length; i++) {
-						argumenti += poljeLinije[i];
+						argumenti.append(poljeLinije[i]);
 						if(i < poljeLinije.length - 1) {
-							argumenti += " ";
+							argumenti.append(" ");
 						}
 					}
 					if(!ljuska.commands.containsKey(imeKomande)) {
@@ -110,8 +97,8 @@ public class MyShell implements Environment{
 						ljuska.writeln("Ne postoji ta komanda");
 						continue;
 					}
-					ljuska.status = komanda.executeCommand(ljuska, argumenti);
-					argumenti = "";
+					ljuska.status = komanda.executeCommand(ljuska, argumenti.toString());
+					argumenti = new StringBuilder();
 				}
 			}while(ljuska.status != ShellStatus.TERMINATE);
 		}catch(ShellIOException e) {
@@ -122,9 +109,8 @@ public class MyShell implements Environment{
 	@Override
 	public String readLine() {
 		try {
-			this.reader = new BufferedReader(new InputStreamReader(System.in));
-			String s = this.reader.readLine();
-			return s;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            return reader.readLine();
 		} catch (IOException e) {
 			throw new ShellIOException("Pogreška pri èitanju");
 		}
@@ -133,9 +119,9 @@ public class MyShell implements Environment{
 	@Override
 	public void write(String text) throws ShellIOException {
 		try {
-			this.writer = new BufferedWriter(new OutputStreamWriter(System.out));
-			this.writer.write(text, 0, text.length());
-			this.writer.flush();
+			writer = new BufferedWriter(new OutputStreamWriter(System.out));
+			writer.write(text, 0, text.length());
+			writer.flush();
 		} catch (IOException e) {
 			throw new ShellIOException("Pogreška pri pisanju");
 		}
@@ -144,10 +130,10 @@ public class MyShell implements Environment{
 	@Override
 	public void writeln(String text) throws ShellIOException {
 		try {
-			this.writer = new BufferedWriter(new OutputStreamWriter(System.out));
-			this.writer.write(text, 0, text.length());
-			this.writer.write("\n");
-			this.writer.flush();
+			writer = new BufferedWriter(new OutputStreamWriter(System.out));
+			writer.write(text, 0, text.length());
+			writer.write("\n");
+			writer.flush();
 		} catch (IOException e) {
 			throw new ShellIOException("Pogreška pri pisanju");
 		}
@@ -155,37 +141,36 @@ public class MyShell implements Environment{
 
 	@Override
 	public SortedMap<String, ShellCommand> commands() {
-		SortedMap<String, ShellCommand> unmSM = Collections.unmodifiableSortedMap(this.commands);
-		return unmSM;
+        return Collections.unmodifiableSortedMap(commands);
 	}
 
 	@Override
 	public Character getMultilineSymbol() {
-		return this.MULTILINE;
+		return MULTILINE;
 	}
 
 	@Override
 	public void setMultilineSymbol(Character symbol) {
-		this.MULTILINE = symbol;
+		MULTILINE = symbol;
 	}
 
 	@Override
 	public Character getPromptSymbol() {
-		return this.PROMPT;
+		return PROMPT;
 	}
 
 	@Override
 	public void setPromptSymbol(Character symbol) {
-		this.PROMPT = symbol;
+		PROMPT = symbol;
 	}
 
 	@Override
 	public Character getMorelinesSymbol() {
-		return this.MORELINES;
+		return MORELINES;
 	}
 
 	@Override
 	public void setMorelinesSymbol(Character symbol) {
-		this.MORELINES = symbol;
+		MORELINES = symbol;
 	}
 }

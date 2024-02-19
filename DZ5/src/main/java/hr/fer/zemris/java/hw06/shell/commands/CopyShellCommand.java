@@ -1,28 +1,27 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
+import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.ShellCommand;
+import hr.fer.zemris.java.hw06.shell.ShellStatus;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellCommand;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
 public class CopyShellCommand implements ShellCommand{
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		arguments = arguments.trim();
 		String[] dvaDir = arguments.split("\\s+");
 		String putDoDatoteke1 = "", putDoDatoteke2 = "";
 		String[] putoviDoDat = {putDoDatoteke1, putDoDatoteke2};
-		if(dvaDir.length < 2 || dvaDir.length > 2) {
+		if(dvaDir.length != 2) {
 			env.writeln("Nepravilan broj argumenata za naredbu copy");
 			return ShellStatus.CONTINUE;
 		}
@@ -114,12 +113,6 @@ public class CopyShellCommand implements ShellCommand{
 
 	@Override
 	public List<String> getCommandDescription() {
-		List<String> lista = new ArrayList<>();
-		lista.add("Uzima 2 argumenta");
-		lista.add("Prvi argument je ime izvorne datoteke");
-		lista.add("Drugi argument je ime odredišne datoteke");
-		lista.add("Ako odredišna datoteka postoji treba pitati korisnika da li se smije pisati preko nje");
-		lista.add("Ako je drugi argument direktorij pretpostavlja se da korisnik želi prekopirati izvornu datoteku u taj direktorij sa istim imenom");
-		return Collections.unmodifiableList(lista);
+        return List.of("Uzima 2 argumenta", "Prvi argument je ime izvorne datoteke", "Drugi argument je ime odredišne datoteke", "Ako odredišna datoteka postoji treba pitati korisnika da li se smije pisati preko nje", "Ako je drugi argument direktorij pretpostavlja se da korisnik želi prekopirati izvornu datoteku u taj direktorij sa istim imenom");
 	}
 }

@@ -1,47 +1,37 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
+import hr.fer.zemris.java.hw06.shell.Environment;
+import hr.fer.zemris.java.hw06.shell.ShellCommand;
+import hr.fer.zemris.java.hw06.shell.ShellStatus;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import hr.fer.zemris.java.hw06.shell.Environment;
-import hr.fer.zemris.java.hw06.shell.ShellCommand;
-import hr.fer.zemris.java.hw06.shell.ShellStatus;
 
 public class HexdumpShellCommand implements ShellCommand{
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		arguments = arguments.trim();
-		String  putDoDatoteke = "";
+		StringBuilder putDoDatoteke = new StringBuilder();
 		char[] poljeZnakova = arguments.toCharArray();
 		int i = 1;
 		if(poljeZnakova[0] == '"') {
-			while(!(poljeZnakova[i] == '"' && poljeZnakova[i - 1] != '\\')) {
-				if(poljeZnakova[i] == '\\' && i + 1 < poljeZnakova.length - 1 && (poljeZnakova[i + 1] == '\\' || poljeZnakova[i + 1] == '"')) {
-					putDoDatoteke += Character.toString(poljeZnakova[i + 1]);
-					i++;
-				}else {
-					putDoDatoteke += Character.toString(poljeZnakova[i]);
-				}
-				i++;
-			}
+			LsShellCommand.getPutDoDatoteke(putDoDatoteke, poljeZnakova, i);
 		}else {
 			String[] polje = arguments.split("\\s+");
 			if(polje.length > 1) {
 				env.writeln("Nepravilan broj argumenata za naredbu hexdump");
 				return ShellStatus.CONTINUE;
 			}
-			putDoDatoteke = polje[0];
+			putDoDatoteke = new StringBuilder(polje[0]);
 		}
 		File file;
 		try {
-			file = new File(putDoDatoteke);
+			file = new File(putDoDatoteke.toString());
 		}catch(Exception e) {
 			env.writeln("Nepravilno zadan put do datoteke za naredbu hexdump");
 			return ShellStatus.CONTINUE;
@@ -53,7 +43,7 @@ public class HexdumpShellCommand implements ShellCommand{
 		}else {
 			try (InputStream fis = Files.newInputStream(file.toPath())) {
 	            // drži jedan oktet podatka
-	            int i1 = 0;
+	            int i1;
 	            // broji koliko je linija ispisano
 	            int count = 0, brojProcZnakova = 0;
 	            StringBuilder ispis = new StringBuilder();
@@ -65,7 +55,7 @@ public class HexdumpShellCommand implements ShellCommand{
 		            if(brojProcZnakova == 1) {
 		            	input.append(" ");
 		            }
-		            if(brojProcZnakova > 0 && brojProcZnakova < 9) {
+		            if(brojProcZnakova < 9) {
 		            	if(brojProcZnakova == 8) {
 		            		hex1.append(String.format("%02X", i1));
 		            	}else {
@@ -76,7 +66,7 @@ public class HexdumpShellCommand implements ShellCommand{
 		                } else {
 		                    input.append(".");
 		                }
-		            }else if(brojProcZnakova > 8 && brojProcZnakova < 17) {
+		            }else if(brojProcZnakova < 17) {
 		            	hex2.append(String.format("%02X ", i1));
 		            	if (!(Character.isISOControl(i1) || i1 < 32 || i1 > 127)) {
 		                    input.append((char) i1);
@@ -84,28 +74,13 @@ public class HexdumpShellCommand implements ShellCommand{
 		                    input.append(".");
 		                }
 		            }else {
-		            	ispis.append(String.format("%08X: ", count * 16), 0, 10);
-		            	ispis.append(String.format("%-23s|%-24s|%-16s", hex1, hex2, input));
-		            	hex1.setLength(0);
-		            	hex2.setLength(0);
-		            	input.setLength(0);
-		            	env.writeln(ispis.toString());
-		            	count++;
-		            	ispis.setLength(0);
-		            	brojProcZnakova = 0;
+						count = getCount(env, count, ispis, hex1, hex2, input);
+						brojProcZnakova = 0;
 		            }
 	            }
 	            if(brojProcZnakova > 0) {
-	            	ispis.append(String.format("%08X: ", count * 16), 0, 10);
-	            	ispis.append(String.format("%-23s|%-24s|%-16s", hex1, hex2, input));
-	            	hex1.setLength(0);
-	            	hex2.setLength(0);
-	            	input.setLength(0);
-	            	env.writeln(ispis.toString());
-	            	count++;
-	            	ispis.setLength(0);
-	            	brojProcZnakova = 0;
-	            }
+					getCount(env, count, ispis, hex1, hex2, input);
+				}
 	        } catch (FileNotFoundException e) {
 	        	env.writeln("Greška kod otvaranja datoteke");
 			} catch (IOException e) {
@@ -115,6 +90,18 @@ public class HexdumpShellCommand implements ShellCommand{
 		return ShellStatus.CONTINUE;
 	}
 
+	private int getCount(Environment env, int count, StringBuilder ispis, StringBuilder hex1, StringBuilder hex2, StringBuilder input) {
+		ispis.append(String.format("%08X: ", count * 16), 0, 10);
+		ispis.append(String.format("%-23s|%-24s|%-16s", hex1, hex2, input));
+		hex1.setLength(0);
+		hex2.setLength(0);
+		input.setLength(0);
+		env.writeln(ispis.toString());
+		count++;
+		ispis.setLength(0);
+		return count;
+	}
+
 	@Override
 	public String getCommandName() {
 		return "hexdump";
@@ -122,10 +109,6 @@ public class HexdumpShellCommand implements ShellCommand{
 
 	@Override
 	public List<String> getCommandDescription() {
-		List<String> lista = new ArrayList<>();
-		lista.add("Uzima 1 argument koji je ime datoteke");
-		lista.add("Proizvodi izlaz hexadekadskih znakova");
-		lista.add("Ako je vrijednost nekog znaka manja od 32 ili veæa od 127 umjesto nje se zapisuje .");
-		return Collections.unmodifiableList(lista);
+        return List.of("Uzima 1 argument koji je ime datoteke", "Proizvodi izlaz hexadekadskih znakova", "Ako je vrijednost nekog znaka manja od 32 ili veæa od 127 umjesto nje se zapisuje .");
 	}
 }

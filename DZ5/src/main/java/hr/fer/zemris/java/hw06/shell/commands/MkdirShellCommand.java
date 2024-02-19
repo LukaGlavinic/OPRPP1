@@ -1,43 +1,33 @@
 package hr.fer.zemris.java.hw06.shell.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import hr.fer.zemris.java.hw06.shell.Environment;
 import hr.fer.zemris.java.hw06.shell.ShellCommand;
 import hr.fer.zemris.java.hw06.shell.ShellStatus;
+
+import java.io.File;
+import java.util.List;
 
 public class MkdirShellCommand implements ShellCommand{
 
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		arguments = arguments.trim();
-		String  putDoDatoteke = "";
+		StringBuilder putDoDatoteke = new StringBuilder();
 		char[] poljeZnakova = arguments.toCharArray();
 		int i = 1;
 		if(poljeZnakova[0] == '"') {
-			while(!(poljeZnakova[i] == '"' && poljeZnakova[i - 1] != '\\')) {
-				if(poljeZnakova[i] == '\\' && i + 1 < poljeZnakova.length - 1 && (poljeZnakova[i + 1] == '\\' || poljeZnakova[i + 1] == '"')) {
-					putDoDatoteke += Character.toString(poljeZnakova[i + 1]);
-					i++;
-				}else {
-					putDoDatoteke += Character.toString(poljeZnakova[i]);
-				}
-				i++;
-			}
+			getPutDoDatoteke(putDoDatoteke, poljeZnakova, i);
 		}else {
 			String[] polje = arguments.split("\\s+");
 			if(polje.length > 1) {
 				env.writeln("Nepravilan broj argumenata za naredbu tree");
 				return ShellStatus.CONTINUE;
 			}
-			putDoDatoteke = polje[0];
+			putDoDatoteke = new StringBuilder(polje[0]);
 		}
 		File file;
 		try {
-			file = new File(putDoDatoteke);
+			file = new File(putDoDatoteke.toString());
 		}catch(Exception e) {
 			env.writeln("Nepravilno zadan put do datoteke za naredbu mkdir");
 			return ShellStatus.CONTINUE;
@@ -50,6 +40,10 @@ public class MkdirShellCommand implements ShellCommand{
 		return ShellStatus.CONTINUE;
 	}
 
+	static void getPutDoDatoteke(StringBuilder putDoDatoteke, char[] poljeZnakova, int i) {
+		TreeShellCommand.getPutDoDatoteke(putDoDatoteke, poljeZnakova, i);
+	}
+
 	@Override
 	public String getCommandName() {
 		return "mkdir";
@@ -57,9 +51,6 @@ public class MkdirShellCommand implements ShellCommand{
 
 	@Override
 	public List<String> getCommandDescription() {
-		List<String> lista = new ArrayList<>();
-		lista.add("Uzima 1 argument koji je direktorij");
-		lista.add("Izraðuje ispravnu strukturu direktorija");
-		return Collections.unmodifiableList(lista);
+        return List.of("Uzima 1 argument koji je direktorij", "Izraðuje ispravnu strukturu direktorija");
 	}
 }

@@ -6,7 +6,7 @@ public class Util {
 		String regex = "^[0-9A-Fa-f]+$";
 		if(keyText.length() % 2 != 0 || !keyText.matches(regex)) {
 			throw new IllegalArgumentException("Krivo zadan string!");
-		}else if(keyText.length() == 0) {
+		}else if(keyText.isEmpty()) {
 			return new byte[0];
 		}
 		byte[] rez = new byte[keyText.length() / 2];
