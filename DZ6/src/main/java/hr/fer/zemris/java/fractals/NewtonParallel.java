@@ -1,5 +1,12 @@
 package hr.fer.zemris.java.fractals;
 
+import hr.fer.zemris.java.fractals.viewer.FractalViewer;
+import hr.fer.zemris.java.fractals.viewer.IFractalProducer;
+import hr.fer.zemris.java.fractals.viewer.IFractalResultObserver;
+import hr.fer.zemris.math.Complex;
+import hr.fer.zemris.math.ComplexPolynomial;
+import hr.fer.zemris.math.ComplexRootedPolynomial;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,12 +14,6 @@ import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import hr.fer.zemris.java.fractals.viewer.FractalViewer;
-import hr.fer.zemris.java.fractals.viewer.IFractalProducer;
-import hr.fer.zemris.java.fractals.viewer.IFractalResultObserver;
-import hr.fer.zemris.math.Complex;
-import hr.fer.zemris.math.ComplexPolynomial;
-import hr.fer.zemris.math.ComplexRootedPolynomial;
 
 public class NewtonParallel {
 	
@@ -65,8 +66,7 @@ public class NewtonParallel {
 							trackovi = true;
 							if(s.startsWith("-t")) {
 								traziseT = true;
-								continue;
-							}else {
+                            }else {
 								numTracks = Integer.parseInt(s.substring(s.indexOf("=") + 1));
 							}
 						}
@@ -238,25 +238,22 @@ public class NewtonParallel {
 
 			Thread[] radnici = new Thread[numWorkers];
 			for(int i = 0; i < radnici.length; i++) {
-				radnici[i] = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						while(true) {
-							PosaoIzracuna p = null;
-							try {
-								p = queue.take();
-								if(p==PosaoIzracuna.NO_JOB) break;
-							} catch (InterruptedException e) {
-								continue;
-							}
-							p.run();
-						}
-					}
-				});
+				radnici[i] = new Thread(() -> {
+                    while(true) {
+                        PosaoIzracuna p;
+                        try {
+                            p = queue.take();
+                            if(p==PosaoIzracuna.NO_JOB) break;
+                        } catch (InterruptedException e) {
+                            continue;
+                        }
+                        p.run();
+                    }
+                });
 			}
-			for(int i = 0; i < radnici.length; i++) {
-				radnici[i].start();
-			}
+            for (Thread thread : radnici) {
+                thread.start();
+            }
 			
 			for(int i = 0; i < brojTraka; i++) {
 				int yMin = i*brojYPoTraci;
@@ -269,7 +266,7 @@ public class NewtonParallel {
 					try {
 						queue.put(posao);
 						break;
-					} catch (InterruptedException e) {
+					} catch (InterruptedException ignored) {
 					}
 				}
 			}
@@ -278,20 +275,20 @@ public class NewtonParallel {
 					try {
 						queue.put(PosaoIzracuna.NO_JOB);
 						break;
-					} catch (InterruptedException e) {
+					} catch (InterruptedException ignored) {
 					}
 				}
 			}
-			
-			for(int i = 0; i < radnici.length; i++) {
-				while(true) {
-					try {
-						radnici[i].join();
-						break;
-					} catch (InterruptedException e) {
-					}
-				}
-			}
+
+            for (Thread thread : radnici) {
+                while (true) {
+                    try {
+                        thread.join();
+                        break;
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }
 			
 			System.out.println("Racunanje gotovo. Idem obavijestiti promatraca tj. GUI!");
 			observer.acceptResult(data, (short)(cp.order() + 1), requestNo);

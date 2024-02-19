@@ -17,8 +17,8 @@ public class Complex {
 	public Complex() {}
 	
 	public Complex(double re, double im) {
-		this.real = re;
-		this.imaginary = im;
+		real = re;
+		imaginary = im;
 	}
 	// returns module of complex number
 	public double module() {
@@ -30,7 +30,7 @@ public class Complex {
 	}
 	// returns this/c
 	public Complex divide(Complex c) {
-		double r1 = this.module();
+		double r1 = module();
 		double psi1 = Math.atan2(imaginary, real);
 		double r2 = c.module();
 		double psi2 = Math.atan2(c.imaginary, c.real);
@@ -50,7 +50,7 @@ public class Complex {
 	}
 	// returns this^n, n is non-negative integer
 	public Complex power(int n) {
-		double radius = this.module();
+		double radius = module();
 		double psi = Math.atan2(imaginary, real);
 		return new Complex(Math.pow(radius, n) * Math.cos(n * psi), Math.pow(radius, n) * Math.sin(n * psi));
 	}
@@ -59,18 +59,18 @@ public class Complex {
 		if(n <= 0) {
 			throw new Exception("Nije dozvoljeno tako korjenovati!");
 		}
-		double radius = this.module();
+		double radius = module();
 		double psi = Math.atan2(imaginary, real);
 		List<Complex> lista = new ArrayList<>();
 		for(int i = 0; i < n; i++) {
-			lista.add(new Complex(Math.pow(radius, 1/n) * Math.cos((psi + 2 * i * Math.PI) / n), Math.pow(radius, 1/n) * Math.sin((psi + 2 * i * Math.PI) / n)));
+			lista.add(new Complex(Math.pow(radius, (double) 1 /n) * Math.cos((psi + 2 * i * Math.PI) / n), Math.pow(radius, (double) 1 /n) * Math.sin((psi + 2 * i * Math.PI) / n)));
 		}
 		return lista;
 	}
 	@Override
 	public String toString() {
 		double pozitIm = Math.abs(imaginary);
-		String s = "" + this.real;
+		String s = "" + real;
 		s += imaginary >= 0 ? " + i" + imaginary : " - i" + pozitIm;
 		return s;
 	}

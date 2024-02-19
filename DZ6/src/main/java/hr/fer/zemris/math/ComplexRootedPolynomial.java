@@ -24,30 +24,29 @@ public class ComplexRootedPolynomial {
             	comb[i] = comb[i - 1] + 1;
         	}
     	}
-    	for(int i = 0; i < combinations.size(); i++) {
-    		int[] poljeIndexa = combinations.get(i);
-    		Complex konst = Complex.ONE;
-    		for(int j = 0; j < poljeIndexa.length; j++) {
-    			konst = konst.multiply(poljeKorijena[poljeIndexa[j]]);
-    		}
-    		noviKoeficijenti.add(konst);
-    	}
+        for (int[] poljeIndexa : combinations) {
+            Complex konst = Complex.ONE;
+            for (int j = 0; j < poljeIndexa.length; j++) {
+                konst = konst.multiply(poljeKorijena[poljeIndexa[j]]);
+            }
+            noviKoeficijenti.add(konst);
+        }
 		return noviKoeficijenti;
 	}
 
-	private Complex konstanta;
-	private Complex[] poljeKorijena;
+	private final Complex konstanta;
+	private final Complex[] poljeKorijena;
 	// constructor
 	public ComplexRootedPolynomial(Complex constant, Complex ... roots) {
-		this.konstanta = constant;
-		this.poljeKorijena = roots;
+		konstanta = constant;
+		poljeKorijena = roots;
 	}
 	// computes polynomial value at given point z
 	public Complex apply(Complex z) {
 		Complex rez = konstanta;
-		for(int i = 0; i < poljeKorijena.length; i++) {
-			rez = rez.multiply(z.sub(poljeKorijena[i]));
-		}
+        for (Complex complex : poljeKorijena) {
+            rez = rez.multiply(z.sub(complex));
+        }
 		return rez;
 	}
 	// converts this representation to ComplexPolynomial type
@@ -56,9 +55,9 @@ public class ComplexRootedPolynomial {
 		List<Complex> koeficijentiZaZbrojit;
 		Complex predznak = poljeKorijena.length % 2 == 0 ? Complex.ONE : Complex.ONE_NEG, zbroj;
 		poljeFaktora[0] = predznak;
-		for(int i = 0; i < poljeKorijena.length; i++) {
-			poljeFaktora[0] = poljeFaktora[0].multiply(poljeKorijena[i]);
-		}
+        for (Complex complex : poljeKorijena) {
+            poljeFaktora[0] = poljeFaktora[0].multiply(complex);
+        }
 		predznak = predznak.negate();
 		for(int i = 1; i < poljeFaktora.length - 1; i++) {
 			koeficijentiZaZbrojit = prolaziKrozPolje(poljeKorijena.length - i);
@@ -77,11 +76,11 @@ public class ComplexRootedPolynomial {
 	}
 	@Override
 	public String toString() {
-		String s = "" + "(" + konstanta.toString() + ")";
-		for(int i = 0; i < poljeKorijena.length; i++) {
-			s += "*(z - (" + poljeKorijena[i].toString() + "))";
-		}
-		return s;
+		StringBuilder s = new StringBuilder("(" + konstanta.toString() + ")");
+        for (Complex complex : poljeKorijena) {
+            s.append("*(z - (").append(complex.toString()).append("))");
+        }
+		return s.toString();
 	}
 	// finds index of closest root for given complex number z that is within
 	// treshold; if there is no such root, returns -1
