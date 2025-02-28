@@ -22,37 +22,32 @@ public class NewtonParallel {
 	private static int numTracks;
 	
 	public static void main(String[] args) {
-		
-		for(String s : args) {//ispis provjera
-			System.out.println(s);
-		}
-		
 		numWorkers = Runtime.getRuntime().availableProcessors();
 		try {
-			if(args.length == 0) {//ako nema argumenata
+			if(args.length == 0) {// if no arguments
 				numTracks = 4 * numWorkers;
 			}else {
-				boolean workeri = false, trackovi = false, traziseW = false, traziseT = false;
+				boolean workers = false, tracks = false, searchW = false, searchT = false;
 				for(String s : args) {
-					if(traziseT) {
-						traziseT = false;
+					if(searchT) {
+						searchT = false;
 						numTracks = Integer.parseInt(s);
 						if(numTracks < 1) {
-							throw new Exception("Premali zadani broj tracks!");
+							throw new Exception("Too few tracks!");
 						}
 						continue;
-					}else if(traziseW) {
-						traziseW = false;
+					}else if(searchW) {
+						searchW = false;
 						numWorkers = Integer.parseInt(s);
 						continue;
 					}
 					if(s.startsWith("--workers") || s.startsWith("-w")) {
-						if(workeri) {
-							throw new Exception("Ne smije se opet zadavati workers!");
+						if(workers) {
+							throw new Exception("You may not enter number of workers again!");
 						}else {
-							workeri = true;
+							workers = true;
 							if(s.startsWith("-w")) {
-								traziseW = true;
+								searchW = true;
 								continue;
 							}else {
 								numWorkers = Integer.parseInt(s.substring(s.indexOf("=") + 1));
@@ -60,12 +55,12 @@ public class NewtonParallel {
 						}
 					}
 					if(s.startsWith("--tracks") || s.startsWith("-t")) {
-						if(trackovi) {
-							throw new Exception("Ne smije se opet zadavati tracks!");
+						if(tracks) {
+							throw new Exception("You may not enter number of tracks again!");
 						}else {
-							trackovi = true;
+							tracks = true;
 							if(s.startsWith("-t")) {
-								traziseT = true;
+								searchT = true;
                             }else {
 								numTracks = Integer.parseInt(s.substring(s.indexOf("=") + 1));
 							}
@@ -77,88 +72,88 @@ public class NewtonParallel {
 			System.out.println(e.getMessage());
 			System.exit(0);
 		}
-		System.out.println("Broj tracks: " + numTracks + " Broj workers: " + numWorkers);//ispis provjera
+		System.out.println("Number of tracks: " + numTracks + " Number of workers: " + numWorkers);
 		
 		System.out.println("Welcome to Newton-Raphson iteration-based fractal viewer.");
-		System.out.println("Please enter at least two roots, one root per line. Enter 'done' when done.");
-		int brojProcitanih = 0, indexUzorka;
+		System.out.println("Please enter at least two roots, one root per line. Enter 'done' when you are done.");
+		int numberOfRead = 0, indexOfSample;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		ArrayList<String> listaLinija = new ArrayList<>();
-		String linija = "";
+		ArrayList<String> lines = new ArrayList<>();
+		String line = "";
 		String prompt;
 		
-		while(!linija.trim().equals("done")) {
-			prompt = "Root " + (brojProcitanih + 1) + ">";
+		while(!line.trim().equals("done")) {
+			prompt = "Root " + (numberOfRead + 1) + " > ";
 			System.out.print(prompt);
 			try {
-				linija = reader.readLine();
-				if(linija.trim().equals("done")) {
+				line = reader.readLine();
+				if(line.trim().equals("done")) {
 					break;
 				}
-				listaLinija.add(linija);
-				brojProcitanih++;
+				lines.add(line);
+				numberOfRead++;
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
 		}
 		try {
-			if(brojProcitanih > 1) {
-				Complex[] predaniKorijeni = new Complex[listaLinija.size()];
-				double realni, imag, predznak;
+			if(numberOfRead > 1) {
+				Complex[] passedRoots = new Complex[lines.size()];
+				double real, imaginary, sign;
 				String s;
-				for(int i = 0; i < listaLinija.size(); i++) {
-					s = listaLinija.get(i);
+				for(int i = 0; i < lines.size(); i++) {
+					s = lines.get(i);
 					if(s.isBlank()) {
 						throw new Exception();
 					}
 					s = s.trim();
-					realni = imag = 0;
-					predznak = 1;
+					real = imaginary = 0;
+					sign = 1;
 					if(s.contains(" + i") || s.contains(" - i")) {
 						String[] realIImag = new String[2];
 						if(s.contains(" - i")) {
-							predznak = -1;
-							indexUzorka = s.indexOf(" - i");
+							sign = -1;
+							indexOfSample = s.indexOf(" - i");
 						}else {
-							indexUzorka = s.indexOf(" + i");
+							indexOfSample = s.indexOf(" + i");
 						}
-						realIImag[0] = s.substring(0, indexUzorka);
-						realIImag[1] = s.substring(indexUzorka + 4);
+						realIImag[0] = s.substring(0, indexOfSample);
+						realIImag[1] = s.substring(indexOfSample + 4);
 						if(realIImag[1].isBlank()) {
-							imag = 1 * predznak;
+							imaginary = 1 * sign;
 						}else {
-							imag = Double.parseDouble(realIImag[1]) * predznak;
+							imaginary = Double.parseDouble(realIImag[1]) * sign;
 						}
-						realni = Double.parseDouble(realIImag[0]);
+						real = Double.parseDouble(realIImag[0]);
 					}else if(s.contains("i")){
 						if(s.startsWith("-")) {
-							predznak = -1;
+							sign = -1;
 							s = s.substring(2);
 						}else {
 							s = s.substring(1);
 						}
 						if(s.isBlank()) {
-							imag = 1 * predznak;
+							imaginary = 1 * sign;
 						}else {
-							imag = Double.parseDouble(s) * predznak;
+							imaginary = Double.parseDouble(s) * sign;
 						}
 					}else {
-						realni = Double.parseDouble(s);
+						real = Double.parseDouble(s);
 					}
-					predaniKorijeni[i] = new Complex(realni, imag);
+					passedRoots[i] = new Complex(real, imaginary);
 				}
-				crp = new ComplexRootedPolynomial(new Complex(1, 0), predaniKorijeni);
+				crp = new ComplexRootedPolynomial(new Complex(1, 0), passedRoots);
 				System.out.println("Image of fractal will appear shortly. Thank you.");
 				FractalViewer.show(new MojProducer());
 			}else {
-				System.out.println("Nedovoljno korijena... TERMINIRAM!");
+				System.out.println("Too few roots... TERMINATING!");
 			}
 		}catch(Exception e) {
-			System.out.println("Korijen ne smije biti prazan unos i smije sadržavati samo brojeve i slovo 'i'!");
+			System.out.println("The root must not be empty string and must contain only numbers and the letter 'i'!");
 		}
 	}
 
-	public static class PosaoIzracuna implements Runnable {
+	public static class Calculation implements Runnable {
 		double reMin;
 		double reMax;
 		double imMin;
@@ -171,13 +166,13 @@ public class NewtonParallel {
 		short[] data;
 		AtomicBoolean cancel;
 		ComplexPolynomial cp;
-		public static PosaoIzracuna NO_JOB = new PosaoIzracuna();
+		public static Calculation NO_JOB = new Calculation();
 		
-		private PosaoIzracuna() {}
+		private Calculation() {}
 		
-		public PosaoIzracuna(double reMin, double reMax, double imMin,
-				double imMax, int width, int height, int yMin, int yMax, 
-				int m, short[] data, AtomicBoolean cancel, ComplexPolynomial cp) {
+		public Calculation(double reMin, double reMax, double imMin,
+						   double imMax, int width, int height, int yMin, int yMax,
+						   int m, short[] data, AtomicBoolean cancel, ComplexPolynomial cp) {
 			super();
 			this.reMin = reMin;
 			this.reMax = reMax;
@@ -202,7 +197,7 @@ public class NewtonParallel {
 					double cre = x / (width-1.0) * (reMax - reMin) + reMin;
 					double cim = (height-1.0-y) / (height-1) * (imMax - imMin) + imMin;
 					double module;
-					int iters = 0;
+					int iterationCount = 0;
 					Complex zn = new Complex(cre, cim);
 					do {
 						Complex numerator = cp.apply(zn);
@@ -211,8 +206,8 @@ public class NewtonParallel {
 						Complex fraction = numerator.divide(denominator);
 						zn = zn.sub(fraction);
 						module = zn.sub(znOld).module();
-						iters++;
-					} while(iters < m && module > 0.001);
+						iterationCount++;
+					} while(iterationCount < m && module > 0.001);
 					index = crp.indexOfClosestRootFor(zn, 0.002);
 					data[offset++] = (short) (index+1);
 				}
@@ -224,26 +219,26 @@ public class NewtonParallel {
 		@Override
 		public void produce(double reMin, double reMax, double imMin, double imMax,
 				int width, int height, long requestNo, IFractalResultObserver observer, AtomicBoolean cancel) {
-			System.out.println("Zapocinjem izracun...");
+			System.out.println("Starting the calculation...");
 			int m = 16*16*16;
 			short[] data = new short[width * height];
 			if(numTracks > height) {
 				numTracks = height;
 			}
-			final int brojTraka = numTracks;
-			int brojYPoTraci = height / brojTraka;
-			ComplexPolynomial cp = crp.toComplexPolynom();
+			final int numberOfTracks = numTracks;
+			int numberYPerTrack = height / numberOfTracks;
+			ComplexPolynomial cp = crp.toComplexPolynomial();
 			
-			final BlockingQueue<PosaoIzracuna> queue = new LinkedBlockingQueue<>();
+			final BlockingQueue<Calculation> queue = new LinkedBlockingQueue<>();
 
-			Thread[] radnici = new Thread[numWorkers];
-			for(int i = 0; i < radnici.length; i++) {
-				radnici[i] = new Thread(() -> {
+			Thread[] workers = new Thread[numWorkers];
+			for(int i = 0; i < workers.length; i++) {
+				workers[i] = new Thread(() -> {
                     while(true) {
-                        PosaoIzracuna p;
+                        Calculation p;
                         try {
                             p = queue.take();
-                            if(p==PosaoIzracuna.NO_JOB) break;
+                            if(p== Calculation.NO_JOB) break;
                         } catch (InterruptedException e) {
                             continue;
                         }
@@ -251,36 +246,34 @@ public class NewtonParallel {
                     }
                 });
 			}
-            for (Thread thread : radnici) {
+            for (Thread thread : workers) {
                 thread.start();
             }
-			
-			for(int i = 0; i < brojTraka; i++) {
-				int yMin = i*brojYPoTraci;
-				int yMax = (i+1)*brojYPoTraci-1;
-				if(i==brojTraka-1) {
+			for(int i = 0; i < numberOfTracks; i++) {
+				int yMin = i*numberYPerTrack;
+				int yMax = (i + 1) * numberYPerTrack - 1;
+				if(i==numberOfTracks-1) {
 					yMax = height-1;
 				}
-				PosaoIzracuna posao = new PosaoIzracuna(reMin, reMax, imMin, imMax, width, height, yMin, yMax, m, data, cancel, cp);
+				Calculation work = new Calculation(reMin, reMax, imMin, imMax, width, height, yMin, yMax, m, data, cancel, cp);
 				while(true) {
 					try {
-						queue.put(posao);
+						queue.put(work);
 						break;
 					} catch (InterruptedException ignored) {
 					}
 				}
 			}
-			for(int i = 0; i < radnici.length; i++) {
+			for(int i = 0; i < workers.length; i++) {
 				while(true) {
 					try {
-						queue.put(PosaoIzracuna.NO_JOB);
+						queue.put(Calculation.NO_JOB);
 						break;
 					} catch (InterruptedException ignored) {
 					}
 				}
 			}
-
-            for (Thread thread : radnici) {
+            for (Thread thread : workers) {
                 while (true) {
                     try {
                         thread.join();
@@ -289,8 +282,7 @@ public class NewtonParallel {
                     }
                 }
             }
-			
-			System.out.println("Racunanje gotovo. Idem obavijestiti promatraca tj. GUI!");
+			System.out.println("Calculating finished. Alerting observers - GUI!");
 			observer.acceptResult(data, (short)(cp.order() + 1), requestNo);
 		}
 	}

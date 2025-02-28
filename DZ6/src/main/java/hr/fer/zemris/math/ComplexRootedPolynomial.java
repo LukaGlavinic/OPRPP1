@@ -1,100 +1,72 @@
 package hr.fer.zemris.math;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ComplexRootedPolynomial {
-	
-	private List<Complex> prolaziKrozPolje(int kolikiPribrojnik) {
-		List<Complex> noviKoeficijenti = new ArrayList<>();
-		List<int[]> combinations = new ArrayList<>();
-    	int[] comb = new int[kolikiPribrojnik];
-    	for (int i = 1; i < kolikiPribrojnik; i++) {
-        	comb[i] = i;
-    	}
-    	while (comb[kolikiPribrojnik - 1] < poljeKorijena.length) {
-        	combinations.add(comb.clone());
 
-        	int t = kolikiPribrojnik - 1;
-        	while (t != 0 && comb[t] == poljeKorijena.length - kolikiPribrojnik + t) {
-            	t--;
-        	}
-        	comb[t]++;
-        	for (int i = t + 1; i < kolikiPribrojnik; i++) {
-            	comb[i] = comb[i - 1] + 1;
-        	}
-    	}
-        for (int[] poljeIndexa : combinations) {
-            Complex konst = Complex.ONE;
-            for (int j = 0; j < poljeIndexa.length; j++) {
-                konst = konst.multiply(poljeKorijena[poljeIndexa[j]]);
-            }
-            noviKoeficijenti.add(konst);
-        }
-		return noviKoeficijenti;
-	}
+	private final Complex constant;
+	private final Complex[] roots;
 
-	private final Complex konstanta;
-	private final Complex[] poljeKorijena;
-	// constructor
+	/**
+	 *
+	 * @param constant complex number that multiplies the polynomial
+	 * @param roots root of each member of the polynomial
+	 */
 	public ComplexRootedPolynomial(Complex constant, Complex ... roots) {
-		konstanta = constant;
-		poljeKorijena = roots;
+		this.constant = constant;
+		this.roots = roots;
 	}
-	// computes polynomial value at given point z
+
+	/**
+	 * computes polynomial value at given point z
+	 * @param z a complex point at which to compute value
+	 * @return the polynomial value at the give point
+	 */
 	public Complex apply(Complex z) {
-		Complex rez = konstanta;
-        for (Complex complex : poljeKorijena) {
-            rez = rez.multiply(z.sub(complex));
+		Complex result = constant;
+        for (Complex root : roots) {
+            result = result.multiply(z.sub(root));
         }
-		return rez;
+		return result;
 	}
-	// converts this representation to ComplexPolynomial type
-	public ComplexPolynomial toComplexPolynom() {
-		Complex[] poljeFaktora = new Complex[poljeKorijena.length + 1];
-		List<Complex> koeficijentiZaZbrojit;
-		Complex predznak = poljeKorijena.length % 2 == 0 ? Complex.ONE : Complex.ONE_NEG, zbroj;
-		poljeFaktora[0] = predznak;
-        for (Complex complex : poljeKorijena) {
-            poljeFaktora[0] = poljeFaktora[0].multiply(complex);
-        }
-		predznak = predznak.negate();
-		for(int i = 1; i < poljeFaktora.length - 1; i++) {
-			koeficijentiZaZbrojit = prolaziKrozPolje(poljeKorijena.length - i);
-			zbroj = Complex.ZERO;
-			for(int j = 0; j < koeficijentiZaZbrojit.size(); j++) {
-				zbroj = zbroj.add(koeficijentiZaZbrojit.get(j));
-			}
-			poljeFaktora[i] = zbroj.multiply(predznak);
-			predznak = predznak.negate();
+
+	/**
+	 * converts this representation to ComplexPolynomial type
+	 * @return a ComplexPolynomial representing the current ComplexRootedPolynomial
+	 */
+	public ComplexPolynomial toComplexPolynomial() {
+		Complex[] factors = {Complex.ONE};
+		ComplexPolynomial result = new ComplexPolynomial(factors);
+		for (Complex root : roots) {
+			Complex[] factors2 = {root.negate(), Complex.ONE};
+			ComplexPolynomial factor = new ComplexPolynomial(factors2);
+			result = result.multiply(factor);
 		}
-		poljeFaktora[poljeFaktora.length - 1] = Complex.ONE;
-		for(int i = 0; i < poljeFaktora.length; i++) {
-			poljeFaktora[i] = poljeFaktora[i].multiply(konstanta);
-		}
-		return new ComplexPolynomial(poljeFaktora);
+		return result.mul(constant);
 	}
 	@Override
 	public String toString() {
-		StringBuilder s = new StringBuilder("(" + konstanta.toString() + ")");
-        for (Complex complex : poljeKorijena) {
+		StringBuilder s = new StringBuilder("(" + constant.toString() + ")");
+        for (Complex complex : roots) {
             s.append("*(z - (").append(complex.toString()).append("))");
         }
 		return s.toString();
 	}
-	// finds index of closest root for given complex number z that is within
-	// treshold; if there is no such root, returns -1
-	// first root has index 0, second index 1, etc
-	public int indexOfClosestRootFor(Complex z, double treshold) {
+
+	/**
+	 * finds index of closest root for given complex number z that is within first root has index 0, second index 1, etc
+	 * @param z complex number to find the index of the closest root to
+	 * @param threshold if there is no such root, returns -1
+	 * @return index of the closest root for the given complex number
+	 */
+	public int indexOfClosestRootFor(Complex z, double threshold) {
 		int index = -1;
-		double udalj = Double.MAX_VALUE, modul;
-		Complex razlika;
-		for(int i = 0; i < poljeKorijena.length; i++) {
-			razlika = z.sub(poljeKorijena[i]);
-			modul = razlika.module();
-			if(modul <= treshold && modul < udalj) {
+		double distance = Double.MAX_VALUE, module;
+		Complex difference;
+		for(int i = 0; i < roots.length; i++) {
+			difference = z.sub(roots[i]);
+			module = difference.module();
+			if(module <= threshold && module < distance) {
 				index = i;
-				udalj = modul;
+				distance = module;
 			}
 		}
 		if(index == -1) {

@@ -21,80 +21,80 @@ public class Newton {
 
 		System.out.println("Welcome to Newton-Raphson iteration-based fractal viewer.");
 		System.out.println("Please enter at least two roots, one root per line. Enter 'done' when done.");
-		int brojProcitanih = 0, indexUzorka;
+		int numberOfRead = 0, indexOfSample;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		ArrayList<String> listaLinija = new ArrayList<>();
-		String linija = "";
+		ArrayList<String> lines = new ArrayList<>();
+		String line = "";
 		String prompt;
 		
-		while(!linija.trim().equals("done")) {
-			prompt = "Root " + (brojProcitanih + 1) + ">";
+		while(!line.trim().equals("done")) {
+			prompt = "Root " + (numberOfRead + 1) + ">";
 			System.out.print(prompt);
 			try {
-				linija = reader.readLine();
-				if(linija.trim().equals("done")) {
+				line = reader.readLine();
+				if(line.trim().equals("done")) {
 					break;
 				}
-				listaLinija.add(linija);
-				brojProcitanih++;
+				lines.add(line);
+				numberOfRead++;
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
 		}
 		try {
-			if(brojProcitanih > 1) {
-				Complex[] predaniKorijeni = new Complex[listaLinija.size()];
-				double realni, imag, predznak;
+			if(numberOfRead > 1) {
+				Complex[] passedRoots = new Complex[lines.size()];
+				double real, imaginary, sign;
 				String s;
-				for(int i = 0; i < listaLinija.size(); i++) {
-					s = listaLinija.get(i);
+				for(int i = 0; i < lines.size(); i++) {
+					s = lines.get(i);
 					if(s.isBlank()) {
 						throw new Exception();
 					}
 					s = s.trim();
-					realni = imag = 0;
-					predznak = 1;
+					real = imaginary = 0;
+					sign = 1;
 					if(s.contains(" + i") || s.contains(" - i")) {
 						String[] realIImag = new String[2];
 						if(s.contains(" - i")) {
-							predznak = -1;
-							indexUzorka = s.indexOf(" - i");
+							sign = -1;
+							indexOfSample = s.indexOf(" - i");
 						}else {
-							indexUzorka = s.indexOf(" + i");
+							indexOfSample = s.indexOf(" + i");
 						}
-						realIImag[0] = s.substring(0, indexUzorka);
-						realIImag[1] = s.substring(indexUzorka + 4);
+						realIImag[0] = s.substring(0, indexOfSample);
+						realIImag[1] = s.substring(indexOfSample + 4);
 						if(realIImag[1].isBlank()) {
-							imag = 1 * predznak;
+							imaginary = 1 * sign;
 						}else {
-							imag = Double.parseDouble(realIImag[1]) * predznak;
+							imaginary = Double.parseDouble(realIImag[1]) * sign;
 						}
-						realni = Double.parseDouble(realIImag[0]);
+						real = Double.parseDouble(realIImag[0]);
 					}else if(s.contains("i")){
 						if(s.startsWith("-")) {
-							predznak = -1;
+							sign = -1;
 							s = s.substring(2);
 						}else {
 							s = s.substring(1);
 						}
 						if(s.isBlank()) {
-							imag = 1 * predznak;
+							imaginary = 1 * sign;
 						}else {
-							imag = Double.parseDouble(s) * predznak;
+							imaginary = Double.parseDouble(s) * sign;
 						}
 					}else {
-						realni = Double.parseDouble(s);
+						real = Double.parseDouble(s);
 					}
-					predaniKorijeni[i] = new Complex(realni, imag);
+					passedRoots[i] = new Complex(real, imaginary);
 				}
-				crp = new ComplexRootedPolynomial(new Complex(1, 0), predaniKorijeni);
+				crp = new ComplexRootedPolynomial(new Complex(1, 0), passedRoots);
 				System.out.println("Image of fractal will appear shortly. Thank you.");
 				FractalViewer.show(new MojProducer());
 			}else {
-				System.out.println("Nedovoljno korijena... TERMINIRAM!");
+				System.out.println("Not enough roots...TERMINATING!");
 			}
 		}catch(Exception e) {
-			System.out.println("Korijen ne smije biti prazan unos i smije sadržavati samo brojeve i slovo 'i'!");
+			System.out.println("The root must not be empty string and must contain only numbers and the letter 'i'!");
 		}
 	}
 	
@@ -102,10 +102,10 @@ public class Newton {
 		@Override
 		public void produce(double reMin, double reMax, double imMin, double imMax,
 				int width, int height, long requestNo, IFractalResultObserver observer, AtomicBoolean cancel) {
-			System.out.println("Zapocinjem izracun...");
+			System.out.println("Starting the calculation...");
 			int m = 16*16*16, offset = 0, index;
 			short[] data = new short[width * height];
-			ComplexPolynomial cp = crp.toComplexPolynom();
+			ComplexPolynomial cp = crp.toComplexPolynomial();
 
 			for(int y = 0; y < height; y++) {
 				if(cancel.get()) break;
@@ -113,7 +113,7 @@ public class Newton {
 					double cre = x / (width-1.0) * (reMax - reMin) + reMin;
 					double cim = (height-1.0-y) / (height-1) * (imMax - imMin) + imMin;
 					double module;
-					int iters = 0;
+					int iterationCount = 0;
 					Complex zn = new Complex(cre, cim);
 					do {
 						Complex numerator = cp.apply(zn);
@@ -122,13 +122,13 @@ public class Newton {
 						Complex fraction = numerator.divide(denominator);
 						zn = zn.sub(fraction);
 						module = zn.sub(znOld).module();
-						iters++;
-					} while(iters < m && module > 0.001);
+						iterationCount++;
+					} while(iterationCount < m && module > 0.001);
 					index = crp.indexOfClosestRootFor(zn, 0.002);
 					data[offset++] = (short) (index+1);
 				}
 			}
-			System.out.println("Racunanje gotovo. Idem obavijestiti promatraca tj. GUI!");
+			System.out.println("Calculating finished. Alerting observers - GUI!");
 			observer.acceptResult(data, (short)(cp.order() + 1), requestNo);
 		}
 	}
